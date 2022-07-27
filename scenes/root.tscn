@@ -1,0 +1,361 @@
+[gd_scene load_steps=30 format=2]
+
+[ext_resource path="res://arts/card/bkg.png" type="Texture" id=3]
+[ext_resource path="res://arts/fonts/MFYueYuan_Noncommercial-Regular.tres" type="DynamicFontData" id=4]
+[ext_resource path="res://arts/ui/submit_btn.png" type="Texture" id=5]
+[ext_resource path="res://scenes/world_ui.tscn" type="PackedScene" id=6]
+[ext_resource path="res://arts/ui/money0.png" type="Texture" id=7]
+[ext_resource path="res://arts/ui/energy.png" type="Texture" id=8]
+[ext_resource path="res://arts/world/map.png" type="Texture" id=9]
+[ext_resource path="res://scenes/building.tscn" type="PackedScene" id=11]
+
+[sub_resource type="GDScript" id=24]
+script/source = "extends \"res://scripts/engine/turn_based_director.gd\"
+
+func _ready() -> void:
+	.play()
+"
+
+[sub_resource type="GDScript" id=2]
+script/source = "extends TurnBasedPlayer
+
+# Resources
+var gold: int = 0
+var energy: int = 20
+
+func get_energy_delta() -> int:
+	return 5
+
+func _on_submit_pressed() -> void:
+	self.state = State.Submitted
+
+func _on_p1_turn_ready(player) -> void:
+	gold += 6
+	energy += 1
+"
+
+[sub_resource type="StyleBoxEmpty" id=18]
+
+[sub_resource type="StyleBoxEmpty" id=19]
+
+[sub_resource type="StyleBoxEmpty" id=20]
+
+[sub_resource type="StyleBoxEmpty" id=21]
+
+[sub_resource type="StyleBoxEmpty" id=22]
+
+[sub_resource type="Theme" id=23]
+Button/styles/disabled = SubResource( 18 )
+Button/styles/focus = SubResource( 19 )
+Button/styles/hover = SubResource( 20 )
+Button/styles/normal = SubResource( 21 )
+Button/styles/pressed = SubResource( 22 )
+
+[sub_resource type="GDScript" id=17]
+script/source = "extends Button
+
+var on_drag: bool = false
+var start_pos: Vector2
+onready var ui = get_tree().root.get_node(\"0/world/ui\")
+
+func _on_card_button_down() -> void:
+	start_pos = self.rect_global_position
+	
+func _on_card_button_up() -> void:
+	on_drag = false
+	self.rect_global_position = start_pos
+	self.modulate.a = 1.0
+	ui.disable_tile_indicator()
+	
+func _process(delta: float) -> void:
+	if not on_drag:
+		return
+	var new_pos = get_global_mouse_position() - self.rect_size * 0.5
+	set_global_position(new_pos)
+	ui.enable_tile_indicator(new_pos)
+
+func get_drag_data(position: Vector2):
+	\"\"\"开始drag\"\"\"
+	on_drag = true
+	self.modulate.a = 0.5
+"
+
+[sub_resource type="DynamicFont" id=1]
+size = 50
+font_data = ExtResource( 4 )
+
+[sub_resource type="Theme" id=16]
+default_font = SubResource( 1 )
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends Label
+
+func _on_level_director_round_started(i) -> void:
+	text = \"第\" + str(i) + \"回合\"
+"
+
+[sub_resource type="StyleBoxTexture" id=4]
+texture = ExtResource( 5 )
+region_rect = Rect2( 0, 0, 256, 128 )
+modulate_color = Color( 0.313726, 0.564706, 0.384314, 1 )
+
+[sub_resource type="DynamicFont" id=5]
+size = 36
+font_data = ExtResource( 4 )
+
+[sub_resource type="StyleBoxTexture" id=6]
+texture = ExtResource( 5 )
+region_rect = Rect2( 0, 0, 256, 128 )
+modulate_color = Color( 0.266667, 0.541176, 0.784314, 1 )
+
+[sub_resource type="GDScript" id=12]
+script/source = "extends TextureRect
+
+func _process(delta: float) -> void:
+	var player = get_tree().root.get_node(\"0/globals/p1\")
+	$label.text = str(player.energy) + \" (%+d)\" % player.get_energy_delta()
+"
+
+[sub_resource type="DynamicFont" id=13]
+size = 40
+font_data = ExtResource( 4 )
+
+[sub_resource type="Theme" id=14]
+default_font = SubResource( 13 )
+
+[sub_resource type="GDScript" id=15]
+script/source = "extends TextureRect
+
+func _process(delta: float) -> void:
+	var player = get_tree().root.get_node(\"0/globals/p1\")
+	$label.text = str(player.gold)
+"
+
+[sub_resource type="Shader" id=9]
+code = "shader_type canvas_item;
+
+uniform vec2 size = vec2(10, 20);
+uniform float cell_size = 16;
+uniform float cell_spacing = 2;
+uniform vec4 line_color : hint_color;
+
+varying vec2 v;
+
+void vertex() {
+	v = VERTEX;
+}
+
+void fragment() {
+	COLOR.a = 0.;
+	float step_size = cell_size + cell_spacing;
+	float ratio = cell_spacing / step_size;
+	// Grid
+	if (fract(v.x / step_size) < ratio || fract(v.y / step_size) < ratio) COLOR = line_color;
+}"
+
+[sub_resource type="ShaderMaterial" id=10]
+shader = SubResource( 9 )
+shader_param/size = Vector2( 100, 100 )
+shader_param/cell_size = 128.0
+shader_param/cell_spacing = 6.0
+shader_param/line_color = Color( 1, 1, 1, 0.156863 )
+
+[node name="0" type="Node2D"]
+
+[node name="globals" type="Node" parent="."]
+
+[node name="turn_based_director" type="Node" parent="globals"]
+script = SubResource( 24 )
+players = [ NodePath("../p1") ]
+
+[node name="p1" type="Node" parent="globals"]
+script = SubResource( 2 )
+
+[node name="canvas" type="CanvasLayer" parent="."]
+
+[node name="cards" type="Control" parent="canvas"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -921.0
+
+[node name="card" type="Button" parent="canvas/cards"]
+margin_left = 314.0
+margin_top = 438.0
+margin_right = 580.0
+margin_bottom = 789.0
+theme = SubResource( 23 )
+shortcut_in_tooltip = false
+icon = ExtResource( 3 )
+flat = true
+expand_icon = true
+script = SubResource( 17 )
+
+[node name="top_panel" type="ColorRect" parent="canvas"]
+anchor_right = 1.0
+margin_bottom = 144.0
+color = Color( 0.172549, 0.517647, 0.611765, 1 )
+
+[node name="round_label" type="Label" parent="canvas/top_panel"]
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -177.5
+margin_top = -93.0
+margin_right = 177.5
+theme = SubResource( 16 )
+text = "第999回合"
+align = 1
+valign = 1
+script = SubResource( 3 )
+
+[node name="bottom_panel" type="ColorRect" parent="canvas"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -200.0
+color = Color( 0.172549, 0.517647, 0.611765, 1 )
+
+[node name="shop" type="Button" parent="canvas/bottom_panel"]
+margin_left = 603.0
+margin_top = 41.0
+margin_right = 803.0
+margin_bottom = 141.0
+focus_mode = 0
+custom_styles/hover = SubResource( 4 )
+custom_styles/pressed = SubResource( 4 )
+custom_styles/focus = SubResource( 4 )
+custom_styles/disabled = SubResource( 4 )
+custom_styles/normal = SubResource( 4 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+
+[node name="Label" type="Label" parent="canvas/bottom_panel/shop"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/font = SubResource( 5 )
+text = "商店"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="submit" type="Button" parent="canvas/bottom_panel"]
+margin_left = 850.0
+margin_top = 41.0
+margin_right = 1050.0
+margin_bottom = 141.0
+focus_mode = 0
+custom_styles/hover = SubResource( 6 )
+custom_styles/pressed = SubResource( 6 )
+custom_styles/focus = SubResource( 6 )
+custom_styles/disabled = SubResource( 6 )
+custom_styles/normal = SubResource( 6 )
+shortcut_in_tooltip = false
+enabled_focus_mode = 0
+
+[node name="Label" type="Label" parent="canvas/bottom_panel/submit"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_fonts/font = SubResource( 5 )
+text = "结束回合"
+align = 1
+valign = 1
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="energy_label" type="TextureRect" parent="canvas/bottom_panel"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_left = 58.0
+margin_top = -70.0
+margin_right = 158.0
+margin_bottom = -2.0
+texture = ExtResource( 8 )
+expand = true
+stretch_mode = 6
+script = SubResource( 12 )
+
+[node name="label" type="Label" parent="canvas/bottom_panel/energy_label"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = -34.0
+margin_right = 217.0
+margin_bottom = 34.0
+theme = SubResource( 14 )
+custom_colors/font_color = Color( 1, 1, 0, 1 )
+text = "999 (+0)"
+valign = 1
+
+[node name="gold_label" type="TextureRect" parent="canvas/bottom_panel"]
+anchor_top = 0.5
+anchor_bottom = 0.5
+margin_left = 58.0
+margin_top = 8.0
+margin_right = 158.0
+margin_bottom = 76.0
+texture = ExtResource( 7 )
+expand = true
+stretch_mode = 6
+script = SubResource( 15 )
+
+[node name="label" type="Label" parent="canvas/bottom_panel/gold_label"]
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_top = -34.0
+margin_right = 217.0
+margin_bottom = 34.0
+theme = SubResource( 14 )
+text = "999"
+valign = 1
+
+[node name="card_trigger_area" type="ColorRect" parent="canvas"]
+visible = false
+modulate = Color( 1, 1, 1, 0.152941 )
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -609.0
+margin_bottom = -438.0
+
+[node name="world" type="Node2D" parent="."]
+
+[node name="__hidden__" type="Node" parent="world"]
+
+[node name="grid_shader" type="ColorRect" parent="world/__hidden__"]
+visible = false
+material = SubResource( 10 )
+margin_left = -815.0
+margin_top = -809.0
+margin_right = 3631.0
+margin_bottom = 1789.0
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="map" type="Sprite" parent="world"]
+self_modulate = Color( 0.717647, 0.717647, 0.717647, 1 )
+position = Vector2( 603, 1379 )
+scale = Vector2( 2.44455, 2.44455 )
+texture = ExtResource( 9 )
+__meta__ = {
+"_edit_lock_": true
+}
+
+[node name="building" parent="world" instance=ExtResource( 11 )]
+position = Vector2( 448, 1347 )
+
+[node name="ui" parent="world" instance=ExtResource( 6 )]
+
+[connection signal="round_started" from="globals/turn_based_director" to="canvas/top_panel/round_label" method="_on_level_director_round_started"]
+[connection signal="turn_ready" from="globals/p1" to="globals/p1" method="_on_p1_turn_ready"]
+[connection signal="button_down" from="canvas/cards/card" to="canvas/cards/card" method="_on_card_button_down"]
+[connection signal="button_up" from="canvas/cards/card" to="canvas/cards/card" method="_on_card_button_up"]
+[connection signal="pressed" from="canvas/bottom_panel/submit" to="globals/p1" method="_on_submit_pressed"]
