@@ -6,9 +6,7 @@ export_presets.cfg
 # Imported translations (automatically generated from CSV files)
 *.translation
 
-android/build/build/
-android/build/.gradle/
-android/build/libs/
+android/
 builds/
 
 # Mono-specific ignores
