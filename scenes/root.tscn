@@ -13,6 +13,8 @@
 script/source = "extends \"res://scripts/engine/turn_based_director.gd\"
 
 func _ready() -> void:
+	yield(get_tree().create_timer(1), \"timeout\")
+	print(\"turn_based.play()\")
 	.play()
 "
 
@@ -75,7 +77,6 @@ func _process(delta: float) -> void:
 	ui.enable_tile_indicator(new_pos)
 
 func get_drag_data(position: Vector2):
-	\"\"\"开始drag\"\"\"
 	on_drag = true
 	self.modulate.a = 0.5
 "
