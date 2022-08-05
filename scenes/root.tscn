@@ -1,4 +1,4 @@
-[gd_scene load_steps=30 format=2]
+[gd_scene load_steps=32 format=2]
 
 [ext_resource path="res://arts/card/bkg.png" type="Texture" id=3]
 [ext_resource path="res://arts/fonts/MFYueYuan_Noncommercial-Regular.tres" type="DynamicFontData" id=4]
@@ -34,6 +34,16 @@ func _on_submit_pressed() -> void:
 func _on_p1_turn_ready(player) -> void:
 	gold += 6
 	energy += 1
+
+	
+"
+
+[sub_resource type="GDScript" id=26]
+script/source = "extends Node
+
+
+	
+
 "
 
 [sub_resource type="StyleBoxEmpty" id=18]
@@ -161,6 +171,29 @@ shader_param/cell_size = 128.0
 shader_param/cell_spacing = 6.0
 shader_param/line_color = Color( 1, 1, 1, 0.156863 )
 
+[sub_resource type="GDScript" id=27]
+script/source = "extends Sprite
+
+var curr_building: Building setget select_building
+onready var ui = get_tree().root.get_node(\"0/world/ui\")
+
+func select_building(building: Building):
+	deselect_building()
+	curr_building = building
+	ui.enable_selection_indicator(building.position)
+	curr_building.on_select()
+	
+func deselect_building():
+	if curr_building != null:
+		curr_building.on_deselect()
+		ui.disable_selection_indicator()
+
+func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventMouseButton:
+		if event.button_index == 1 and event.pressed:
+			deselect_building()
+"
+
 [node name="0" type="Node2D"]
 
 [node name="globals" type="Node" parent="."]
@@ -172,6 +205,9 @@ players = [ NodePath("../p1") ]
 [node name="p1" type="Node" parent="globals"]
 script = SubResource( 2 )
 
+[node name="selection" type="Node" parent="globals"]
+script = SubResource( 26 )
+
 [node name="canvas" type="CanvasLayer" parent="."]
 
 [node name="cards" type="Control" parent="canvas"]
@@ -179,6 +215,7 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = -921.0
+mouse_filter = 2
 
 [node name="card" type="Button" parent="canvas/cards"]
 margin_left = 314.0
@@ -325,6 +362,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = -609.0
 margin_bottom = -438.0
+mouse_filter = 2
 
 [node name="world" type="Node2D" parent="."]
 
@@ -346,6 +384,7 @@ self_modulate = Color( 0.717647, 0.717647, 0.717647, 1 )
 position = Vector2( 603, 1379 )
 scale = Vector2( 2.44455, 2.44455 )
 texture = ExtResource( 9 )
+script = SubResource( 27 )
 __meta__ = {
 "_edit_lock_": true
 }

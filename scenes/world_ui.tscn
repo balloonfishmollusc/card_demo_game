@@ -21,6 +21,15 @@ func enable_tile_indicator(world_pos: Vector2):
 func disable_tile_indicator():
 	var item = $tile_indicator
 	item.visible = false;
+	
+func enable_selection_indicator(world_pos: Vector2):
+	var item = $selection_indicator
+	item.position = align2grid(world_pos);
+	item.visible = true;
+	
+func disable_selection_indicator():
+	var item = $selection_indicator
+	item.visible = false;
 "
 
 [sub_resource type="TileSet" id=11]
