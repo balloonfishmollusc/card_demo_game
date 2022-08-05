@@ -3,6 +3,7 @@ extends Node
 class_name TurnBasedDirector
 
 signal round_started(i)
+signal round_ended(i)
 
 export var players: Array = []
 var p_index: int = 0
@@ -32,6 +33,7 @@ func play():
 		for p in players:
 			p.state = TurnBasedPlayer.State.Pending
 			yield(p, "turn_submitted")
+		emit_signal("round_ended", r_index)
 	
 func is_game_end() -> bool:
 	return false

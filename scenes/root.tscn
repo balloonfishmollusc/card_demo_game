@@ -164,7 +164,7 @@ shader_param/line_color = Color( 1, 1, 1, 0.156863 )
 
 [node name="globals" type="Node" parent="."]
 
-[node name="turn_based_director" type="Node" parent="globals"]
+[node name="turn_based" type="Node" parent="globals"]
 script = SubResource( 24 )
 players = [ NodePath("../p1") ]
 
@@ -354,7 +354,7 @@ position = Vector2( 448, 1347 )
 
 [node name="ui" parent="world" instance=ExtResource( 6 )]
 
-[connection signal="round_started" from="globals/turn_based_director" to="canvas/top_panel/round_label" method="_on_level_director_round_started"]
+[connection signal="round_started" from="globals/turn_based" to="canvas/top_panel/round_label" method="_on_level_director_round_started"]
 [connection signal="turn_ready" from="globals/p1" to="globals/p1" method="_on_p1_turn_ready"]
 [connection signal="button_down" from="canvas/cards/card" to="canvas/cards/card" method="_on_card_button_down"]
 [connection signal="button_up" from="canvas/cards/card" to="canvas/cards/card" method="_on_card_button_up"]
