@@ -23,8 +23,6 @@ workflows:
       - name: Download Godot templates
         script: |
                       curl -o ./godot-templates.zip ${GODOT_TEMPLATES_URL} && unzip ./godot-templates.zip
-      - name: Setup templates
-        script: |
                       mkdir -p "${GODOT_TEMPLATES_DIR}" && mv templates "${GODOT_TEMPLATES_DIR}/${GODOT_VERSION}.stable"
       - name: Prepare builds directory
         script: mkdir builds/
