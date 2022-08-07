@@ -27,16 +27,19 @@ workflows:
                       curl -o ./godot-templates.zip ${GODOT_TEMPLATES_URL} && unzip ./godot-templates.zip
                       mkdir -p "${GODOT_TEMPLATES_DIR}" && mv templates "${GODOT_TEMPLATES_DIR}/${GODOT_VERSION}.stable"
                       fi
+      - name: Export project
+        script: |
+                      mkdir builds/
+                      ${GODOT_EXEC} --path . --no-window --export iOS builds/xcode
       - name: Setup codesign
         script: |
                       keychain initialize
                       app-store-connect fetch-signing-files "games.hclcat.card0" --type IOS_APP_STORE --create
                       keychain add-certificates
                       xcode-project use-profiles
-      - name: Export project
+      - name: Build .ipa
         script: |
-                      mkdir builds/
-                      ${GODOT_EXEC} --path . --no-window --export iOS builds/xcode
+                      xcode-project build-ipa --project "builds/xcode/Card0.xcodeproj" --scheme "Card0"
     publishing:
       app_store_connect:
         api_key: $APP_STORE_CONNECT_PRIVATE_KEY
