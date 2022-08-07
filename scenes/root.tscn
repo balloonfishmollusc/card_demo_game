@@ -1,13 +1,13 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=28 format=2]
 
-[ext_resource path="res://arts/card/bkg.png" type="Texture" id=3]
+[ext_resource path="res://prefabs/card.tscn" type="PackedScene" id=1]
 [ext_resource path="res://arts/fonts/MFYueYuan_Noncommercial-Regular.tres" type="DynamicFontData" id=4]
 [ext_resource path="res://arts/ui/submit_btn.png" type="Texture" id=5]
 [ext_resource path="res://scenes/world_ui.tscn" type="PackedScene" id=6]
 [ext_resource path="res://arts/ui/money0.png" type="Texture" id=7]
 [ext_resource path="res://arts/ui/energy.png" type="Texture" id=8]
 [ext_resource path="res://arts/world/map.png" type="Texture" id=9]
-[ext_resource path="res://scenes/building.tscn" type="PackedScene" id=11]
+[ext_resource path="res://prefabs/building.tscn" type="PackedScene" id=11]
 
 [sub_resource type="GDScript" id=24]
 script/source = "extends \"res://scripts/engine/turn_based_director.gd\"
@@ -28,9 +28,6 @@ var energy: int = 20
 func get_energy_delta() -> int:
 	return 5
 
-func _on_submit_pressed() -> void:
-	self.state = State.Submitted
-
 func _on_p1_turn_ready(player) -> void:
 	gold += 6
 	energy += 1
@@ -44,51 +41,6 @@ script/source = "extends Node
 
 	
 
-"
-
-[sub_resource type="StyleBoxEmpty" id=18]
-
-[sub_resource type="StyleBoxEmpty" id=19]
-
-[sub_resource type="StyleBoxEmpty" id=20]
-
-[sub_resource type="StyleBoxEmpty" id=21]
-
-[sub_resource type="StyleBoxEmpty" id=22]
-
-[sub_resource type="Theme" id=23]
-Button/styles/disabled = SubResource( 18 )
-Button/styles/focus = SubResource( 19 )
-Button/styles/hover = SubResource( 20 )
-Button/styles/normal = SubResource( 21 )
-Button/styles/pressed = SubResource( 22 )
-
-[sub_resource type="GDScript" id=17]
-script/source = "extends Button
-
-var on_drag: bool = false
-var start_pos: Vector2
-onready var ui = get_tree().root.get_node(\"0/world/ui\")
-
-func _on_card_button_down() -> void:
-	start_pos = self.rect_global_position
-	
-func _on_card_button_up() -> void:
-	on_drag = false
-	self.rect_global_position = start_pos
-	self.modulate.a = 1.0
-	ui.disable_tile_indicator()
-	
-func _process(delta: float) -> void:
-	if not on_drag:
-		return
-	var new_pos = get_global_mouse_position() - self.rect_size * 0.5
-	set_global_position(new_pos)
-	ui.enable_tile_indicator(new_pos)
-
-func get_drag_data(position: Vector2):
-	on_drag = true
-	self.modulate.a = 0.5
 "
 
 [sub_resource type="DynamicFont" id=1]
@@ -110,6 +62,14 @@ texture = ExtResource( 5 )
 region_rect = Rect2( 0, 0, 256, 128 )
 modulate_color = Color( 0.313726, 0.564706, 0.384314, 1 )
 
+[sub_resource type="GDScript" id=28]
+script/source = "extends Button
+
+func _on_shop_pressed() -> void:
+	Q.get_card_shop().open()
+	
+"
+
 [sub_resource type="DynamicFont" id=5]
 size = 36
 font_data = ExtResource( 4 )
@@ -118,6 +78,13 @@ font_data = ExtResource( 4 )
 texture = ExtResource( 5 )
 region_rect = Rect2( 0, 0, 256, 128 )
 modulate_color = Color( 0.266667, 0.541176, 0.784314, 1 )
+
+[sub_resource type="GDScript" id=29]
+script/source = "extends Button
+
+func _on_submit_pressed() -> void:
+	Q.get_p1().state = TurnBasedPlayer.State.Submitted
+"
 
 [sub_resource type="GDScript" id=12]
 script/source = "extends TextureRect
@@ -140,6 +107,20 @@ script/source = "extends TextureRect
 func _process(delta: float) -> void:
 	var player = get_tree().root.get_node(\"0/globals/p1\")
 	$label.text = str(player.gold)
+"
+
+[sub_resource type="GDScript" id=30]
+script/source = "extends Panel
+
+func open():
+	visible = true
+
+func close():
+	visible = false
+
+func _on_card_shop_gui_input(event: InputEvent) -> void:
+	if Q.is_tap_event(event):
+		close()
 "
 
 [sub_resource type="Shader" id=9]
@@ -189,9 +170,8 @@ func deselect_building():
 		ui.disable_selection_indicator()
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == 1 and event.pressed:
-			deselect_building()
+	if Q.is_tap_event(event):
+		deselect_building()
 "
 
 [node name="0" type="Node2D"]
@@ -217,17 +197,7 @@ anchor_bottom = 1.0
 margin_top = -921.0
 mouse_filter = 2
 
-[node name="card" type="Button" parent="canvas/cards"]
-margin_left = 314.0
-margin_top = 438.0
-margin_right = 580.0
-margin_bottom = 789.0
-theme = SubResource( 23 )
-shortcut_in_tooltip = false
-icon = ExtResource( 3 )
-flat = true
-expand_icon = true
-script = SubResource( 17 )
+[node name="card2" parent="canvas/cards" instance=ExtResource( 1 )]
 
 [node name="top_panel" type="ColorRect" parent="canvas"]
 anchor_right = 1.0
@@ -268,6 +238,7 @@ custom_styles/disabled = SubResource( 4 )
 custom_styles/normal = SubResource( 4 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
+script = SubResource( 28 )
 
 [node name="Label" type="Label" parent="canvas/bottom_panel/shop"]
 anchor_right = 1.0
@@ -293,6 +264,7 @@ custom_styles/disabled = SubResource( 6 )
 custom_styles/normal = SubResource( 6 )
 shortcut_in_tooltip = false
 enabled_focus_mode = 0
+script = SubResource( 29 )
 
 [node name="Label" type="Label" parent="canvas/bottom_panel/submit"]
 anchor_right = 1.0
@@ -354,15 +326,45 @@ theme = SubResource( 14 )
 text = "999"
 valign = 1
 
-[node name="card_trigger_area" type="ColorRect" parent="canvas"]
+[node name="card_shop" type="Panel" parent="canvas"]
 visible = false
-modulate = Color( 1, 1, 1, 0.152941 )
-anchor_top = 1.0
+self_modulate = Color( 1, 1, 1, 0.25098 )
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -609.0
-margin_bottom = -438.0
-mouse_filter = 2
+script = SubResource( 30 )
+
+[node name="panel" type="Panel" parent="canvas/card_shop"]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = 32.0
+margin_top = -453.0
+margin_right = -32.0
+margin_bottom = 64.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="canvas/card_shop/panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/separation = 64
+alignment = 1
+
+[node name="card2" parent="canvas/card_shop/panel/HBoxContainer" instance=ExtResource( 1 )]
+margin_left = 45.0
+margin_top = 0.0
+margin_right = 311.0
+margin_bottom = 517.0
+
+[node name="card3" parent="canvas/card_shop/panel/HBoxContainer" instance=ExtResource( 1 )]
+margin_left = 375.0
+margin_top = 0.0
+margin_right = 641.0
+margin_bottom = 517.0
+
+[node name="card4" parent="canvas/card_shop/panel/HBoxContainer" instance=ExtResource( 1 )]
+margin_left = 705.0
+margin_top = 0.0
+margin_right = 971.0
+margin_bottom = 517.0
 
 [node name="world" type="Node2D" parent="."]
 
@@ -396,6 +398,6 @@ position = Vector2( 448, 1347 )
 
 [connection signal="round_started" from="globals/turn_based" to="canvas/top_panel/round_label" method="_on_level_director_round_started"]
 [connection signal="turn_ready" from="globals/p1" to="globals/p1" method="_on_p1_turn_ready"]
-[connection signal="button_down" from="canvas/cards/card" to="canvas/cards/card" method="_on_card_button_down"]
-[connection signal="button_up" from="canvas/cards/card" to="canvas/cards/card" method="_on_card_button_up"]
-[connection signal="pressed" from="canvas/bottom_panel/submit" to="globals/p1" method="_on_submit_pressed"]
+[connection signal="pressed" from="canvas/bottom_panel/shop" to="canvas/bottom_panel/shop" method="_on_shop_pressed"]
+[connection signal="pressed" from="canvas/bottom_panel/submit" to="canvas/bottom_panel/submit" method="_on_submit_pressed"]
+[connection signal="gui_input" from="canvas/card_shop" to="canvas/card_shop" method="_on_card_shop_gui_input"]

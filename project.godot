@@ -32,9 +32,13 @@ _global_script_class_icons={
 
 [application]
 
-config/name="Card Demo Game"
+config/name="Card0"
 run/main_scene="res://scenes/root.tscn"
 config/icon="res://icon.png"
+
+[autoload]
+
+Q="*res://scripts/q.gd"
 
 [display]
 

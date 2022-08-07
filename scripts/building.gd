@@ -46,7 +46,6 @@ func on_deselect():
 	pass
 
 func _on_building_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-	if event is InputEventMouseButton:
-		if event.button_index == 1 and event.pressed:
-			var map = get_tree().root.get_node("0/world/map")
-			map.select_building(self)
+	if Q.is_tap_event(event):
+		var map = get_node("/root/0/world/map")
+		map.select_building(self)

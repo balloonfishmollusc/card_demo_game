@@ -70,7 +70,6 @@ __meta__ = {
 
 [node name="tile_indicator" type="Sprite" parent="."]
 visible = false
-position = Vector2( 584, 1088 )
 texture = ExtResource( 5 )
 __meta__ = {
 "_edit_lock_": true
@@ -87,7 +86,7 @@ texture = SubResource( 18 )
 
 [node name="selection_indicator" type="Sprite" parent="."]
 visible = false
-position = Vector2( 584, 1347 )
+scale = Vector2( 1.28, 1.28 )
 texture = ExtResource( 4 )
 __meta__ = {
 "_edit_lock_": true

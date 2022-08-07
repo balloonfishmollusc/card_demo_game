@@ -1,0 +1,64 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://arts/card/bkg.png" type="Texture" id=1]
+
+[sub_resource type="StyleBoxEmpty" id=18]
+
+[sub_resource type="StyleBoxEmpty" id=19]
+
+[sub_resource type="StyleBoxEmpty" id=20]
+
+[sub_resource type="StyleBoxEmpty" id=21]
+
+[sub_resource type="StyleBoxEmpty" id=22]
+
+[sub_resource type="Theme" id=23]
+Button/styles/disabled = SubResource( 18 )
+Button/styles/focus = SubResource( 19 )
+Button/styles/hover = SubResource( 20 )
+Button/styles/normal = SubResource( 21 )
+Button/styles/pressed = SubResource( 22 )
+
+[sub_resource type="GDScript" id=17]
+script/source = "extends Button
+
+var on_drag: bool = false
+var start_pos: Vector2
+onready var ui = get_tree().root.get_node(\"0/world/ui\")
+
+func _on_card_button_down() -> void:
+	start_pos = self.rect_global_position
+	
+func _on_card_button_up() -> void:
+	on_drag = false
+	self.rect_global_position = start_pos
+	self.modulate.a = 1.0
+	ui.disable_tile_indicator()
+	
+func _process(delta: float) -> void:
+	if not on_drag:
+		return
+	var new_pos = get_global_mouse_position() - self.rect_size * 0.5
+	set_global_position(new_pos)
+	ui.enable_tile_indicator(new_pos)
+
+func get_drag_data(position: Vector2):
+	on_drag = true
+	self.modulate.a = 0.5
+"
+
+[node name="card" type="Button"]
+margin_left = 314.0
+margin_top = 438.0
+margin_right = 580.0
+margin_bottom = 789.0
+rect_min_size = Vector2( 266, 351 )
+theme = SubResource( 23 )
+shortcut_in_tooltip = false
+icon = ExtResource( 1 )
+flat = true
+expand_icon = true
+script = SubResource( 17 )
+
+[connection signal="button_down" from="." to="." method="_on_card_button_down"]
+[connection signal="button_up" from="." to="." method="_on_card_button_up"]
