@@ -9,7 +9,7 @@ workflows:
         GODOT_TEMPLATES_URL: https://downloads.tuxfamily.org/godotengine/${GODOT_VERSION}/Godot_v${GODOT_VERSION}-stable_export_templates.tpz
         GODOT_TEMPLATES_DIR: "/Users/builder/Library/Application Support/Godot/templates"
         GODOT_EXEC: Godot.app/Contents/MacOS/Godot
-        EXPORT_TYPE: ios
+        EXPORT_TYPE: iOS
  
         APP_STORE_CONNECT_ISSUER_ID: f73c523e-7e17-491f-9f26-70cf6687c732
         APP_STORE_CONNECT_KEY_IDENTIFIER: 5V23RW6D4B
