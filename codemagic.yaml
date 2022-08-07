@@ -1,5 +1,6 @@
 workflows:
   default-workflow:
+    instance_type: mac_pro
     environment:
       xcode: latest
       cocoapods: default
