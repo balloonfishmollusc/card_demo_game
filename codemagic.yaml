@@ -36,10 +36,10 @@ workflows:
       - name: Export project
         script: |
                       mkdir builds/
-                      ${GODOT_EXEC} --path . --no-window --export iOS builds/xcode
+                      ${GODOT_EXEC} --path . --no-window --export iOS builds/Card0.ipa
       - name: Build .ipa
         script: |
-                      xcode-project build-ipa --project "builds/xcode/Card0.xcodeproj" --scheme "Card0"
+                      xcode-project build-ipa --project "builds/Card0.xcodeproj" --scheme "Card0"
     publishing:
       app_store_connect:
         api_key: $APP_STORE_CONNECT_PRIVATE_KEY
