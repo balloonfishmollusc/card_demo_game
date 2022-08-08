@@ -180,20 +180,29 @@ func _process(delta: float) -> void:
 	_camera_2d.position -= (_mouse_pos_this_frame - _mouse_pos_last_frame) * _camera_2d.zoom.x
 	_mouse_pos_last_frame = _mouse_pos_this_frame
 
-func _input(event: InputEvent) -> void:
-	if Q.is_double_tap_event(event):
-		if not _camera_2d.is_busy():
-			_camera_2d.toggle_zoom_mode()
-		return
+var _last_tap_time = 0
 
+func _unhandled_input(event: InputEvent) -> void:
 	if Q.is_tap_event(event, true):
+		var curr_msecs = OS.get_system_time_msecs()
+		var curr_elpased_msecs = curr_msecs - _last_tap_time
+		_last_tap_time = curr_msecs
+		
 		deselect_building()
+	
+		if curr_elpased_msecs < 300:
+			# double tap
+			if not _camera_2d.is_busy():
+				_camera_2d.toggle_zoom_mode()
+			return
+
 		if not _camera_2d.is_busy():
 			_moving_camera = true
 			_mouse_pos_last_frame = get_viewport().get_mouse_position()
 		
 	if Q.is_tap_event(event, false):
 		_moving_camera = false
+		
 "
 
 [sub_resource type="GDScript" id=31]
