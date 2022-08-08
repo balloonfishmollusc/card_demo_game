@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://prefabs/card.tscn" type="PackedScene" id=1]
 [ext_resource path="res://arts/fonts/MFYueYuan_Noncommercial-Regular.tres" type="DynamicFontData" id=4]
@@ -168,10 +168,56 @@ func deselect_building():
 	if curr_building != null:
 		curr_building.on_deselect()
 		ui.disable_selection_indicator()
+		
+var _moving_camera = false
+var _mouse_pos_last_frame: Vector2
+onready var _camera_2d = Q.get_camera_2d()
 
-func _unhandled_input(event: InputEvent) -> void:
-	if Q.is_tap_event(event):
+func _process(delta: float) -> void:
+	if not _moving_camera:
+		return
+	var _mouse_pos_this_frame = get_viewport().get_mouse_position()
+	_camera_2d.position -= (_mouse_pos_this_frame - _mouse_pos_last_frame) * _camera_2d.zoom.x
+	_mouse_pos_last_frame = _mouse_pos_this_frame
+
+func _input(event: InputEvent) -> void:
+	if Q.is_double_tap_event(event):
+		if not _camera_2d.is_busy():
+			_camera_2d.toggle_zoom_mode()
+		return
+
+	if Q.is_tap_event(event, true):
 		deselect_building()
+		if not _camera_2d.is_busy():
+			_moving_camera = true
+			_mouse_pos_last_frame = get_viewport().get_mouse_position()
+		
+	if Q.is_tap_event(event, false):
+		_moving_camera = false
+"
+
+[sub_resource type="GDScript" id=31]
+script/source = "extends Camera2D
+
+export var is_zoom_out: bool = false
+onready var tween: Tween = $Tween
+
+func is_busy():
+	return tween.is_active()
+
+func toggle_zoom_mode():
+	assert(not is_busy())
+	is_zoom_out = ! is_zoom_out
+	var final_scale = Vector2.ONE*0.6 if is_zoom_out else Vector2.ONE
+	tween.interpolate_property(
+		self,
+		\"zoom\",
+		zoom,
+		final_scale,
+		0.5,
+		Tween.TRANS_QUAD
+	)
+	tween.start()
 "
 
 [node name="0" type="Node2D"]
@@ -395,6 +441,15 @@ __meta__ = {
 position = Vector2( 448, 1347 )
 
 [node name="ui" parent="world" instance=ExtResource( 6 )]
+
+[node name="Camera2D" type="Camera2D" parent="world"]
+position = Vector2( 540, 1080 )
+current = true
+smoothing_enabled = true
+smoothing_speed = 8.0
+script = SubResource( 31 )
+
+[node name="Tween" type="Tween" parent="world/Camera2D"]
 
 [connection signal="round_started" from="globals/turn_based" to="canvas/top_panel/round_label" method="_on_level_director_round_started"]
 [connection signal="turn_ready" from="globals/p1" to="globals/p1" method="_on_p1_turn_ready"]
