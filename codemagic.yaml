@@ -20,7 +20,7 @@ workflows:
     scripts:
       - name: Download Godot templates
         script: |
-                      ls ${GODOT_TEMPLATES_DIR}
+                      ls "${GODOT_TEMPLATES_DIR}"
                       if [ ! -f "${GODOT_TEMPLATES_DIR}/${GODOT_VERSION}.stable" ]; then
                       curl -o ./godot-templates.zip ${GODOT_TEMPLATES_URL} && unzip ./godot-templates.zip
                       mkdir -p "${GODOT_TEMPLATES_DIR}" && mv templates "${GODOT_TEMPLATES_DIR}/${GODOT_VERSION}.stable"
