@@ -14,3 +14,6 @@ func is_tap_event(event: InputEvent, pressed: bool=true):
 		if event.button_index == 1 and event.pressed == pressed:
 			return true
 	return false
+
+func get_global_mouse_position():
+	return get_camera_2d().get_global_mouse_position()

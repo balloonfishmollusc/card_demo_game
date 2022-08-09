@@ -38,8 +38,11 @@ func _on_card_button_up() -> void:
 func _process(delta: float) -> void:
 	if not on_drag:
 		return
-	set_global_position(get_global_mouse_position()-self.rect_size*0.5)
-	ui.enable_tile_indicator(Q.get_camera_2d().get_global_mouse_position()-self.rect_size*0.5)
+	var offset = self.rect_size * 0.5
+	set_global_position(get_global_mouse_position()-offset)
+	ui.enable_tile_indicator(
+		Q.get_global_mouse_position()-offset*Q.get_camera_2d().zoom.x
+	)
 
 func get_drag_data(position: Vector2):
 	on_drag = true
