@@ -25,15 +25,23 @@ func play():
 	r_index = 0;
 	p_index = 0;
 
-	while not is_game_end():
+	while not _is_game_end():
 		r_index += 1;
-		emit_signal("round_started", r_index)
+		yield(_on_round_start(), "completed")
 		for p in players:
 			p.state = TurnBasedPlayer.State.Ready
 		for p in players:
 			p.state = TurnBasedPlayer.State.Pending
 			yield(p, "turn_submitted")
-		emit_signal("round_ended", r_index)
-	
-func is_game_end() -> bool:
+			yield(_on_round_end(), "completed")
+
+func _on_round_start():
+	yield(get_tree(), "idle_frame")
+	emit_signal("round_started", r_index)
+
+func _on_round_end():
+	yield(get_tree(), "idle_frame")
+	emit_signal("round_ended", r_index)
+
+func _is_game_end() -> bool:
 	return false

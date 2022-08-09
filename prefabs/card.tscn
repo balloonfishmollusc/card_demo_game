@@ -40,9 +40,17 @@ func _process(delta: float) -> void:
 		return
 	var offset = self.rect_size * 0.5
 	set_global_position(get_global_mouse_position()-offset)
-	ui.enable_tile_indicator(
-		Q.get_global_mouse_position()-offset*Q.get_camera_2d().zoom.x
-	)
+	
+	var container = get_parent() as HBoxContainer
+	# 判断出卡区域
+	var _can_use = get_global_mouse_position().y < container.rect_position.y
+
+	if _can_use:
+		ui.enable_tile_indicator(
+			Q.get_global_mouse_position()-offset*Q.get_camera_2d().zoom.x
+		)
+	else:
+		ui.disable_tile_indicator()
 
 func get_drag_data(position: Vector2):
 	on_drag = true

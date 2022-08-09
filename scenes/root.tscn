@@ -1,6 +1,7 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://prefabs/card.tscn" type="PackedScene" id=1]
+[ext_resource path="res://arts/ui/anims/sand_clock.png" type="Texture" id=2]
 [ext_resource path="res://arts/fonts/MFYueYuan_Noncommercial-Regular.tres" type="DynamicFontData" id=4]
 [ext_resource path="res://arts/ui/submit_btn.png" type="Texture" id=5]
 [ext_resource path="res://scenes/world_ui.tscn" type="PackedScene" id=6]
@@ -16,6 +17,12 @@ func _ready() -> void:
 	yield(get_tree().create_timer(1), \"timeout\")
 	print(\"turn_based.play()\")
 	.play()
+
+func _on_round_end():
+	var sand_clock = get_node(\"/root/0/canvas/sand_clock\")
+	sand_clock.play_anim()
+	yield(sand_clock, \"animation_finished\")
+	emit_signal(\"round_ended\", r_index)
 "
 
 [sub_resource type="GDScript" id=2]
@@ -121,6 +128,37 @@ func close():
 func _on_card_shop_gui_input(event: InputEvent) -> void:
 	if Q.is_tap_event(event):
 		close()
+"
+
+[sub_resource type="GDScript" id=32]
+script/source = "extends Panel
+
+signal animation_finished()
+
+func play_anim():
+	visible = true
+
+	# idle
+	yield(get_tree().create_timer(0.1), \"timeout\")
+	# fill
+	yield(get_tree().create_timer(0.48), \"timeout\")
+	yield(get_tree().create_timer(0.48), \"timeout\")
+	# idle
+	yield(get_tree().create_timer(0.16), \"timeout\")
+
+	$Tween.interpolate_property(
+		$icon,
+		\"rect_rotation\",
+		0,
+		180,
+		0.24, Tween.TRANS_QUAD)
+	$Tween.start()
+	yield($Tween, \"tween_completed\")
+	
+	# idle
+	yield(get_tree().create_timer(0.32), \"timeout\")
+	visible = false
+	emit_signal(\"animation_finished\")
 "
 
 [sub_resource type="Shader" id=9]
@@ -245,14 +283,37 @@ script = SubResource( 26 )
 
 [node name="canvas" type="CanvasLayer" parent="."]
 
-[node name="cards" type="Control" parent="canvas"]
+[node name="cards" type="HBoxContainer" parent="canvas"]
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -921.0
+margin_top = -551.0
+margin_bottom = -200.0
 mouse_filter = 2
 
 [node name="card2" parent="canvas/cards" instance=ExtResource( 1 )]
+margin_left = 0.0
+margin_top = 0.0
+margin_right = 266.0
+margin_bottom = 351.0
+
+[node name="card3" parent="canvas/cards" instance=ExtResource( 1 )]
+margin_left = 270.0
+margin_top = 0.0
+margin_right = 536.0
+margin_bottom = 351.0
+
+[node name="card4" parent="canvas/cards" instance=ExtResource( 1 )]
+margin_left = 540.0
+margin_top = 0.0
+margin_right = 806.0
+margin_bottom = 351.0
+
+[node name="card5" parent="canvas/cards" instance=ExtResource( 1 )]
+margin_left = 810.0
+margin_top = 0.0
+margin_right = 1076.0
+margin_bottom = 351.0
 
 [node name="top_panel" type="ColorRect" parent="canvas"]
 anchor_right = 1.0
@@ -420,6 +481,28 @@ margin_left = 705.0
 margin_top = 0.0
 margin_right = 971.0
 margin_bottom = 517.0
+
+[node name="sand_clock" type="Panel" parent="canvas"]
+visible = false
+self_modulate = Color( 1, 1, 1, 0.25098 )
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = SubResource( 32 )
+
+[node name="icon" type="TextureRect" parent="canvas/sand_clock"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -100.0
+margin_top = -100.0
+margin_right = 60.0
+margin_bottom = 60.0
+rect_pivot_offset = Vector2( 80, 80 )
+texture = ExtResource( 2 )
+expand = true
+
+[node name="Tween" type="Tween" parent="canvas/sand_clock"]
 
 [node name="world" type="Node2D" parent="."]
 
