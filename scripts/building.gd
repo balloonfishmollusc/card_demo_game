@@ -41,10 +41,13 @@ func _on_round_end(i):
 	pass
 
 func _on_select():
-	pass
+	Q.get_info_panel().enable(self)
 	
 func _on_deselect():
-	pass
+	Q.get_info_panel().disable()
+	
+func get_description():
+	return name + " Lv. %d" % level + " Prog %d/%d" % [progress.x, progress.y]
 
 func _on_building_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if Q.is_tap_event(event):

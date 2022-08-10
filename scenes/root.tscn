@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://prefabs/card.tscn" type="PackedScene" id=1]
 [ext_resource path="res://arts/ui/anims/sand_clock.png" type="Texture" id=2]
@@ -39,14 +39,6 @@ func _on_p1_turn_submitted(player) -> void:
 	pass
 "
 
-[sub_resource type="GDScript" id=26]
-script/source = "extends Node
-
-
-	
-
-"
-
 [sub_resource type="DynamicFont" id=1]
 size = 50
 font_data = ExtResource( 4 )
@@ -60,6 +52,24 @@ script/source = "extends Label
 func _on_level_director_round_started(i) -> void:
 	text = \"第\" + str(i) + \"回合\"
 "
+
+[sub_resource type="GDScript" id=35]
+script/source = "extends Panel
+
+func enable(building):
+	visible = true
+	$Label.text = building.get_description()
+	
+func disable():
+	visible = false
+"
+
+[sub_resource type="DynamicFont" id=33]
+size = 40
+font_data = ExtResource( 4 )
+
+[sub_resource type="Theme" id=34]
+default_font = SubResource( 33 )
 
 [sub_resource type="StyleBoxTexture" id=4]
 texture = ExtResource( 5 )
@@ -273,9 +283,6 @@ players = [ NodePath("../p1") ]
 [node name="p1" type="Node" parent="globals"]
 script = SubResource( 2 )
 
-[node name="selection" type="Node" parent="globals"]
-script = SubResource( 26 )
-
 [node name="canvas" type="CanvasLayer" parent="."]
 
 [node name="cards" type="HBoxContainer" parent="canvas"]
@@ -328,6 +335,21 @@ text = "第999回合"
 align = 1
 valign = 1
 script = SubResource( 3 )
+
+[node name="info_panel" type="Panel" parent="canvas"]
+visible = false
+anchor_right = 1.0
+margin_top = 144.0
+margin_bottom = 274.0
+script = SubResource( 35 )
+
+[node name="Label" type="Label" parent="canvas/info_panel"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource( 34 )
+text = "123"
+align = 1
+valign = 1
 
 [node name="bottom_panel" type="ColorRect" parent="canvas"]
 anchor_top = 1.0

@@ -11,6 +11,9 @@ func get_turn_based() -> TurnBasedDirector:
 	
 func get_card_shop():
 	return get_node("/root/0/canvas/card_shop")
+	
+func get_info_panel():
+	return get_node("/root/0/canvas/info_panel")
 
 func is_tap_event(event: InputEvent, pressed: bool=true):
 	if event is InputEventMouseButton:
