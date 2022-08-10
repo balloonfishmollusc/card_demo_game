@@ -49,12 +49,13 @@ func _process(delta: float) -> void:
 		ui.enable_tile_indicator(
 			Q.get_global_mouse_position()-offset*Q.get_camera_2d().zoom.x
 		)
+		self.modulate.a = 0.5
 	else:
+		self.modulate.a = 1.0
 		ui.disable_tile_indicator()
 
 func get_drag_data(position: Vector2):
 	on_drag = true
-	self.modulate.a = 0.5
 "
 
 [node name="card" type="Button"]
