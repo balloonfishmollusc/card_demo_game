@@ -5,6 +5,9 @@ class_name TurnBasedDirector
 signal round_started(i)
 signal round_ended(i)
 
+signal pre_round_started(i)
+signal pre_round_ended(i)
+
 export var players: Array = []
 var p_index: int = 0
 var r_index: int = 0
@@ -27,13 +30,15 @@ func play():
 
 	while not _is_game_end():
 		r_index += 1;
+		emit_signal("pre_round_started", r_index)
 		yield(_on_round_start(), "completed")
 		for p in players:
 			p.state = TurnBasedPlayer.State.Ready
 		for p in players:
 			p.state = TurnBasedPlayer.State.Pending
 			yield(p, "turn_submitted")
-			yield(_on_round_end(), "completed")
+		emit_signal("pre_round_ended", r_index)
+		yield(_on_round_end(), "completed")
 
 func _on_round_start():
 	yield(get_tree(), "idle_frame")

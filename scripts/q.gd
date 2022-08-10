@@ -5,6 +5,9 @@ func get_p1():
 
 func get_camera_2d() -> Camera2D:
 	return get_node("/root/0/world/Camera2D") as Camera2D
+
+func get_turn_based() -> TurnBasedDirector:
+	return get_node("/root/0/globals/turn_based") as TurnBasedDirector
 	
 func get_card_shop():
 	return get_node("/root/0/canvas/card_shop")

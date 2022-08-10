@@ -4,16 +4,17 @@ class_name Building
 signal completed()
 signal progress_changed(value)
 
-export(Vector2) var progress = Vector2(0, 3)	# 进度/最大进度
+var progress = Vector2(0, 3)	# 进度/最大进度
 var level: int = 0				# 默认0级，建造完为1级
 
 func is_completed() -> bool:
 	return progress.x >= progress.y
 
 func _ready():
-	var turn_based = get_tree().root.get_node("0/globals/turn_based")
+	var turn_based = Q.get_turn_based()
 	turn_based.connect("round_started", self, "_on_round_start_internal")
 	turn_based.connect("round_ended", self, "_on_round_end_internal")
+	connect("input_event", self, "_on_building_input_event")
 	
 func add_progress(inc: int):
 	assert(not is_completed())
@@ -39,10 +40,10 @@ func _on_round_start(i):
 func _on_round_end(i):
 	pass
 
-func on_select():
+func _on_select():
 	pass
 	
-func on_deselect():
+func _on_deselect():
 	pass
 
 func _on_building_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:

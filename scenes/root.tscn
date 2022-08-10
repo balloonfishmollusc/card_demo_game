@@ -2,13 +2,13 @@
 
 [ext_resource path="res://prefabs/card.tscn" type="PackedScene" id=1]
 [ext_resource path="res://arts/ui/anims/sand_clock.png" type="Texture" id=2]
+[ext_resource path="res://prefabs/buildings/power_station.tscn" type="PackedScene" id=3]
 [ext_resource path="res://arts/fonts/MFYueYuan_Noncommercial-Regular.tres" type="DynamicFontData" id=4]
 [ext_resource path="res://arts/ui/submit_btn.png" type="Texture" id=5]
 [ext_resource path="res://scenes/world_ui.tscn" type="PackedScene" id=6]
 [ext_resource path="res://arts/ui/money0.png" type="Texture" id=7]
 [ext_resource path="res://arts/ui/energy.png" type="Texture" id=8]
 [ext_resource path="res://arts/world/map.png" type="Texture" id=9]
-[ext_resource path="res://prefabs/building.tscn" type="PackedScene" id=11]
 
 [sub_resource type="GDScript" id=24]
 script/source = "extends \"res://scripts/engine/turn_based_director.gd\"
@@ -32,14 +32,11 @@ script/source = "extends TurnBasedPlayer
 var gold: int = 0
 var energy: int = 20
 
-func get_energy_delta() -> int:
-	return 5
-
 func _on_p1_turn_ready(player) -> void:
-	gold += 6
-	energy += 1
+	pass
 
-	
+func _on_p1_turn_submitted(player) -> void:
+	pass
 "
 
 [sub_resource type="GDScript" id=26]
@@ -94,11 +91,10 @@ func _on_submit_pressed() -> void:
 "
 
 [sub_resource type="GDScript" id=12]
-script/source = "extends TextureRect
+script/source = "extends ResLabel
 
-func _process(delta: float) -> void:
-	var player = get_tree().root.get_node(\"0/globals/p1\")
-	$label.text = str(player.energy) + \" (%+d)\" % player.get_energy_delta()
+func _get_value():
+	return Q.get_p1().energy
 "
 
 [sub_resource type="DynamicFont" id=13]
@@ -109,11 +105,10 @@ font_data = ExtResource( 4 )
 default_font = SubResource( 13 )
 
 [sub_resource type="GDScript" id=15]
-script/source = "extends TextureRect
+script/source = "extends ResLabel
 
-func _process(delta: float) -> void:
-	var player = get_tree().root.get_node(\"0/globals/p1\")
-	$label.text = str(player.gold)
+func _get_value():
+	return Q.get_p1().gold
 "
 
 [sub_resource type="GDScript" id=30]
@@ -200,11 +195,11 @@ func select_building(building: Building):
 	deselect_building()
 	curr_building = building
 	ui.enable_selection_indicator(building.position)
-	curr_building.on_select()
+	curr_building._on_select()
 	
 func deselect_building():
 	if curr_building != null:
-		curr_building.on_deselect()
+		curr_building._on_deselect()
 		ui.disable_selection_indicator()
 		
 var _moving_camera = false
@@ -469,18 +464,21 @@ margin_left = 45.0
 margin_top = 0.0
 margin_right = 311.0
 margin_bottom = 517.0
+invocable = false
 
 [node name="card3" parent="canvas/card_shop/panel/HBoxContainer" instance=ExtResource( 1 )]
 margin_left = 375.0
 margin_top = 0.0
 margin_right = 641.0
 margin_bottom = 517.0
+invocable = false
 
 [node name="card4" parent="canvas/card_shop/panel/HBoxContainer" instance=ExtResource( 1 )]
 margin_left = 705.0
 margin_top = 0.0
 margin_right = 971.0
 margin_bottom = 517.0
+invocable = false
 
 [node name="sand_clock" type="Panel" parent="canvas"]
 visible = false
@@ -529,8 +527,8 @@ __meta__ = {
 "_edit_lock_": true
 }
 
-[node name="building" parent="world" instance=ExtResource( 11 )]
-position = Vector2( 448, 1347 )
+[node name="power_station" parent="world" instance=ExtResource( 3 )]
+position = Vector2( 440, 1227 )
 
 [node name="ui" parent="world" instance=ExtResource( 6 )]
 
@@ -545,6 +543,7 @@ script = SubResource( 31 )
 
 [connection signal="round_started" from="globals/turn_based" to="canvas/top_panel/round_label" method="_on_level_director_round_started"]
 [connection signal="turn_ready" from="globals/p1" to="globals/p1" method="_on_p1_turn_ready"]
+[connection signal="turn_submitted" from="globals/p1" to="globals/p1" method="_on_p1_turn_submitted"]
 [connection signal="pressed" from="canvas/bottom_panel/shop" to="canvas/bottom_panel/shop" method="_on_shop_pressed"]
 [connection signal="pressed" from="canvas/bottom_panel/submit" to="canvas/bottom_panel/submit" method="_on_submit_pressed"]
 [connection signal="gui_input" from="canvas/card_shop" to="canvas/card_shop" method="_on_card_shop_gui_input"]

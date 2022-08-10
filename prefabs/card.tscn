@@ -26,14 +26,19 @@ var on_drag: bool = false
 var start_pos: Vector2
 onready var ui = get_tree().root.get_node(\"0/world/ui\")
 
+export var invocable: bool = true
+
 func _on_card_button_down() -> void:
 	start_pos = self.rect_global_position
-	
+
 func _on_card_button_up() -> void:
+	if not on_drag:
+		return
 	on_drag = false
 	self.rect_global_position = start_pos
 	self.modulate.a = 1.0
 	ui.disable_tile_indicator()
+	print(\"card invocation!\")
 	
 func _process(delta: float) -> void:
 	if not on_drag:
@@ -55,6 +60,8 @@ func _process(delta: float) -> void:
 		ui.disable_tile_indicator()
 
 func get_drag_data(position: Vector2):
+	if not invocable:
+		return
 	on_drag = true
 "
 
