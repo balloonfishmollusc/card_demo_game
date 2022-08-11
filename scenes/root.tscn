@@ -224,16 +224,19 @@ func _process(delta: float) -> void:
 	_mouse_pos_last_frame = _mouse_pos_this_frame
 
 var _last_tap_time = 0
+var _last_tap_pos = Vector2.ZERO
 
 func _unhandled_input(event: InputEvent) -> void:
 	if Q.is_tap_event(event, true):
 		var curr_msecs = OS.get_system_time_msecs()
 		var curr_elpased_msecs = curr_msecs - _last_tap_time
+		var curr_mouse_motion: Vector2 = event.position - _last_tap_pos
 		_last_tap_time = curr_msecs
+		_last_tap_pos = event.position
 		
 		deselect_building()
-	
-		if curr_elpased_msecs < 300:
+		
+		if curr_elpased_msecs < 300 and curr_mouse_motion.length() < 50:
 			# double tap
 			if not _camera_2d.is_busy():
 				_camera_2d.toggle_zoom_mode()
