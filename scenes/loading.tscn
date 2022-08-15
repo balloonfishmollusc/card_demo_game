@@ -1,0 +1,113 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://resources/themes/monologue.theme" type="Theme" id=1]
+[ext_resource path="res://arts/world/map.png" type="Texture" id=2]
+[ext_resource path="res://arts/fonts/MFYueYuan_Noncommercial-Regular.tres" type="DynamicFontData" id=3]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 1, 1, 1, 1 )
+
+[sub_resource type="GDScript" id=3]
+script/source = "extends ProgressBar
+
+signal loaded()
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	$Tween.interpolate_property(
+		self,
+		\"value\",
+		0,
+		100,
+		3.0, Tween.TRANS_QUAD
+	)
+	$Tween.start()
+	yield($Tween, \"tween_all_completed\")
+	emit_signal(\"loaded\")
+"
+
+[sub_resource type="DynamicFont" id=5]
+size = 50
+font_data = ExtResource( 3 )
+
+[sub_resource type="Theme" id=6]
+default_font = SubResource( 5 )
+
+[sub_resource type="GDScript" id=7]
+script/source = "extends Button
+
+func _on_start_button_pressed() -> void:
+	get_tree().change_scene(\"res://scenes/level_01.tscn\")
+
+
+func _on_prog_bar_loaded() -> void:
+	visible = true
+"
+
+[node name="0" type="Node2D"]
+
+[node name="canvas" type="CanvasLayer" parent="."]
+
+[node name="bkg" type="Control" parent="canvas"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="level_01" type="TextureRect" parent="canvas/bkg"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -1826.0
+margin_top = -3749.0
+margin_right = 2379.0
+margin_bottom = 99.0
+texture = ExtResource( 2 )
+expand = true
+
+[node name="monologue" type="Label" parent="canvas"]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = 64.0
+margin_top = -448.5
+margin_right = -64.0
+margin_bottom = 296.5
+theme = ExtResource( 1 )
+text = "迪斯里亚半岛位于三大板块的交界处，又四面环海，各类极端天气都是家常便饭。
+
+经过民主投票，人们决定让俄普洛斯担任指挥，以抵抗接下来的暴风雨。
+
+年轻的俄普洛斯刚刚承受了父亲死于海难的打击，他能承担好这一重任吗……"
+align = 1
+autowrap = true
+
+[node name="prog_bar" type="ProgressBar" parent="canvas"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_top = -23.0
+custom_styles/fg = SubResource( 1 )
+custom_styles/bg = SubResource( 2 )
+value = 60.0
+percent_visible = false
+script = SubResource( 3 )
+
+[node name="Tween" type="Tween" parent="canvas/prog_bar"]
+
+[node name="start_button" type="Button" parent="canvas"]
+visible = false
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+margin_left = -200.0
+margin_top = -290.0
+margin_right = 200.0
+margin_bottom = -170.0
+theme = SubResource( 6 )
+text = "点我开始！"
+script = SubResource( 7 )
+
+[connection signal="loaded" from="canvas/prog_bar" to="canvas/start_button" method="_on_prog_bar_loaded"]
+[connection signal="pressed" from="canvas/start_button" to="canvas/start_button" method="_on_start_button_pressed"]

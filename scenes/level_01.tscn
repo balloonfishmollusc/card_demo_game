@@ -10,13 +10,15 @@
 [ext_resource path="res://arts/ui/energy.png" type="Texture" id=8]
 [ext_resource path="res://arts/world/map.png" type="Texture" id=9]
 [ext_resource path="res://scripts/ui/dialog_panel.gd" type="Script" id=10]
+[ext_resource path="res://prefabs/_dialog_widget.tscn" type="PackedScene" id=11]
 
 [sub_resource type="GDScript" id=40]
 script/source = "extends Node2D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	Story.new().pipeline($canvas/dialog_panel)
+	#Story.new().pipeline($canvas/dialog_panel)
+	pass
 "
 
 [sub_resource type="GDScript" id=24]
@@ -89,7 +91,7 @@ modulate_color = Color( 0.313726, 0.564706, 0.384314, 1 )
 script/source = "extends Button
 
 func _on_shop_pressed() -> void:
-	Q.get_card_shop().open()
+	Q.get_card_shop().visible = true
 	
 "
 
@@ -130,20 +132,6 @@ func _get_value():
 	return Q.get_p1().gold
 "
 
-[sub_resource type="GDScript" id=30]
-script/source = "extends Panel
-
-func open():
-	visible = true
-
-func close():
-	visible = false
-
-func _on_card_shop_gui_input(event: InputEvent) -> void:
-	if Q.is_tap_event(event):
-		close()
-"
-
 [sub_resource type="NoiseTexture" id=37]
 
 [sub_resource type="DynamicFont" id=38]
@@ -153,8 +141,8 @@ font_data = ExtResource( 4 )
 [sub_resource type="Theme" id=39]
 default_font = SubResource( 38 )
 
-[sub_resource type="GDScript" id=32]
-script/source = "extends Panel
+[sub_resource type="GDScript" id=41]
+script/source = "extends TextureRect
 
 signal animation_finished()
 
@@ -170,7 +158,7 @@ func play_anim():
 	yield(get_tree().create_timer(0.16), \"timeout\")
 
 	$Tween.interpolate_property(
-		$icon,
+		self,
 		\"rect_rotation\",
 		0,
 		180,
@@ -483,12 +471,6 @@ valign = 1
 
 [node name="card_shop" type="Panel" parent="canvas"]
 visible = false
-self_modulate = Color( 1, 1, 1, 0.25098 )
-anchor_right = 1.0
-anchor_bottom = 1.0
-script = SubResource( 30 )
-
-[node name="panel" type="Panel" parent="canvas/card_shop"]
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
@@ -497,75 +479,72 @@ margin_top = -453.0
 margin_right = -32.0
 margin_bottom = 64.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="canvas/card_shop/panel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="canvas/card_shop"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 custom_constants/separation = 64
 alignment = 1
 
-[node name="card2" parent="canvas/card_shop/panel/HBoxContainer" instance=ExtResource( 1 )]
+[node name="card2" parent="canvas/card_shop/HBoxContainer" instance=ExtResource( 1 )]
 margin_left = 45.0
 margin_top = 0.0
 margin_right = 311.0
 margin_bottom = 517.0
 invocable = false
 
-[node name="card3" parent="canvas/card_shop/panel/HBoxContainer" instance=ExtResource( 1 )]
+[node name="card3" parent="canvas/card_shop/HBoxContainer" instance=ExtResource( 1 )]
 margin_left = 375.0
 margin_top = 0.0
 margin_right = 641.0
 margin_bottom = 517.0
 invocable = false
 
-[node name="card4" parent="canvas/card_shop/panel/HBoxContainer" instance=ExtResource( 1 )]
+[node name="card4" parent="canvas/card_shop/HBoxContainer" instance=ExtResource( 1 )]
 margin_left = 705.0
 margin_top = 0.0
 margin_right = 971.0
 margin_bottom = 517.0
 invocable = false
 
+[node name="_dialog_widget" parent="canvas/card_shop" instance=ExtResource( 11 )]
+barrier_dismissible = true
+
 [node name="dialog_panel" type="Panel" parent="canvas"]
+visible = false
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-margin_top = -305.0
+margin_top = -288.0
+margin_bottom = 4.0
 script = ExtResource( 10 )
 
 [node name="avatar" type="TextureRect" parent="canvas/dialog_panel"]
-anchor_left = 0.5
 anchor_top = 0.5
-anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -508.0
-margin_top = -106.0
-margin_right = -296.0
+margin_left = 32.0
+margin_top = -114.0
+margin_right = 252.0
 margin_bottom = 106.0
 texture = SubResource( 37 )
 expand = true
 
 [node name="text_box" type="RichTextLabel" parent="canvas/dialog_panel"]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -249.0
-margin_top = -105.5
-margin_right = 489.0
-margin_bottom = 107.5
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 291.0
+margin_top = 32.0
+margin_right = -32.0
+margin_bottom = -32.0
 theme = SubResource( 39 )
-text = "让我们来玩吧！"
+text = "太好了，太好了，总算把这一带最有才干的人请来了，这下我们有希望了。"
 scroll_active = false
 
 [node name="Tween" type="Tween" parent="canvas/dialog_panel"]
 
-[node name="sand_clock" type="Panel" parent="canvas"]
-visible = false
-self_modulate = Color( 1, 1, 1, 0.25098 )
-anchor_right = 1.0
-anchor_bottom = 1.0
-script = SubResource( 32 )
+[node name="_dialog_widget" parent="canvas/dialog_panel" instance=ExtResource( 11 )]
 
-[node name="icon" type="TextureRect" parent="canvas/sand_clock"]
+[node name="sand_clock" type="TextureRect" parent="canvas"]
+visible = false
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
@@ -577,8 +556,11 @@ margin_bottom = 60.0
 rect_pivot_offset = Vector2( 80, 80 )
 texture = ExtResource( 2 )
 expand = true
+script = SubResource( 41 )
 
 [node name="Tween" type="Tween" parent="canvas/sand_clock"]
+
+[node name="_dialog_widget" parent="canvas/sand_clock" instance=ExtResource( 11 )]
 
 [node name="world" type="Node2D" parent="."]
 
@@ -624,4 +606,3 @@ script = SubResource( 31 )
 [connection signal="turn_submitted" from="globals/p1" to="globals/p1" method="_on_p1_turn_submitted"]
 [connection signal="pressed" from="canvas/bottom_panel/shop" to="canvas/bottom_panel/shop" method="_on_shop_pressed"]
 [connection signal="pressed" from="canvas/bottom_panel/submit" to="canvas/bottom_panel/submit" method="_on_submit_pressed"]
-[connection signal="gui_input" from="canvas/card_shop" to="canvas/card_shop" method="_on_card_shop_gui_input"]

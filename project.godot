@@ -51,7 +51,7 @@ _global_script_class_icons={
 [application]
 
 config/name="Card0"
-run/main_scene="res://scenes/root.tscn"
+run/main_scene="res://scenes/start.tscn"
 config/icon="res://icon.jpg"
 
 [autoload]

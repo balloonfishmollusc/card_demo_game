@@ -1,0 +1,42 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://arts/fonts/MFYueYuan_Noncommercial-Regular.tres" type="DynamicFontData" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends ColorRect
+
+func _input(event: InputEvent) -> void:
+	if Q.is_tap_event(event):
+		get_tree().change_scene(\"res://scenes/loading.tscn\")
+"
+
+[sub_resource type="DynamicFont" id=2]
+size = 128
+font_data = ExtResource( 1 )
+
+[sub_resource type="Theme" id=3]
+default_font = SubResource( 2 )
+
+[node name="0" type="Node2D"]
+
+[node name="canvas" type="CanvasLayer" parent="."]
+
+[node name="background" type="ColorRect" parent="canvas"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color( 0.4216, 0.54064, 0.62, 1 )
+script = SubResource( 1 )
+
+[node name="Label" type="Label" parent="canvas"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -384.0
+margin_top = -100.0
+margin_right = 384.0
+margin_bottom = 100.0
+theme = SubResource( 3 )
+text = "别人的大逃亡"
+align = 1
+valign = 1

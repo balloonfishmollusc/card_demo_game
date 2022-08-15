@@ -1,0 +1,53 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Node2D
+
+var _tmp_mask: Panel
+var _attached_node: CanvasItem
+
+export var barrier_dismissible = false
+
+func _ready() -> void:
+	_attached_node = get_parent()
+	_attached_node.connect(
+		\"visibility_changed\", self, \"_on_visibility_changed\"
+	)
+	
+	connect(\"tree_exiting\", self, \"_on_tree_exiting\")
+	
+func _on_visibility_changed():
+	if _attached_node.visible:
+		assert(_tmp_mask == null)
+		_tmp_mask = Panel.new()
+		_tmp_mask.self_modulate.a8 = 64
+		_tmp_mask.anchor_left = 0
+		_tmp_mask.anchor_top = 0
+		_tmp_mask.anchor_right = 1
+		_tmp_mask.anchor_bottom = 1
+		_tmp_mask.margin_left = 0
+		_tmp_mask.margin_right = 0
+		_tmp_mask.margin_top = 0
+		_tmp_mask.margin_bottom = 0
+		_tmp_mask.connect(\"gui_input\", self, \"_on_mask_gui_input\")
+		
+		_attached_node.get_parent().add_child(_tmp_mask)
+		_attached_node.get_parent().move_child(
+			_tmp_mask, _attached_node.get_index()
+		)
+	else:
+		_tmp_mask.queue_free()
+		_tmp_mask = null
+
+func _on_mask_gui_input(event: InputEvent):
+	if barrier_dismissible and Q.is_tap_event(event):
+		_attached_node.visible = false
+
+# 如果自身被释放，则清理造出来的Panel
+func _on_tree_exiting():
+	if _tmp_mask != null:
+		_tmp_mask.queue_free()
+"
+
+[node name="_dialog_widget" type="Node2D"]
+script = SubResource( 1 )
