@@ -8,6 +8,8 @@ var _attached_node: CanvasItem
 
 export var barrier_dismissible = false
 
+signal dismissed()
+
 func _ready() -> void:
 	_attached_node = get_parent()
 	_attached_node.connect(
@@ -40,8 +42,10 @@ func _on_visibility_changed():
 		_tmp_mask = null
 
 func _on_mask_gui_input(event: InputEvent):
-	if barrier_dismissible and Q.is_tap_event(event):
-		_attached_node.visible = false
+	if Q.is_tap_event(event):
+		if barrier_dismissible:
+			_attached_node.visible = false
+		emit_signal(\"dismissed\")
 
 # 如果自身被释放，则清理造出来的Panel
 func _on_tree_exiting():

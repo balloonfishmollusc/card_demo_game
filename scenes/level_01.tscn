@@ -11,14 +11,25 @@
 [ext_resource path="res://arts/world/map.png" type="Texture" id=9]
 [ext_resource path="res://scripts/ui/dialog_panel.gd" type="Script" id=10]
 [ext_resource path="res://prefabs/_dialog_widget.tscn" type="PackedScene" id=11]
+[ext_resource path="res://arts/characters/pc.png" type="Texture" id=12]
 
 [sub_resource type="GDScript" id=40]
 script/source = "extends Node2D
 
+var texts = [
+	\"太好了，太好了，总算把这一带最有才干的人请来了，这下我们有希望了。\",
+	\"很高兴见到你！接下来，希望你能协助我完成这件关乎我们未来的任务——击退洪水！ \",
+	\"好在成功的条件并不难——只要取得面对洪水的勇气，并在32回合建好防洪大坝就行啦！\",
+	\"建造防洪大坝非常简单，只要先这样，再这样，最后这样，就轻松地解决了。\",
+	\"我们接下来说说如何取得面对洪水的勇气。 \",
+	\"每回合，商店会随机刷新建筑，法术两种类型卡牌。\",
+	\"未完待续......\"
+]
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	#Story.new().pipeline($canvas/dialog_panel)
-	pass
+	var panel = $canvas/dialog_panel
+	panel.play(texts)
 "
 
 [sub_resource type="GDScript" id=24]
@@ -40,7 +51,7 @@ func _on_round_end():
 script/source = "extends TurnBasedPlayer
 
 # Resources
-var gold: int = 0
+var cowries: int = 0
 var energy: int = 20
 
 func _on_p1_turn_ready(player) -> void:
@@ -129,10 +140,8 @@ default_font = SubResource( 13 )
 script/source = "extends ResLabel
 
 func _get_value():
-	return Q.get_p1().gold
+	return Q.get_p1().cowries
 "
-
-[sub_resource type="NoiseTexture" id=37]
 
 [sub_resource type="DynamicFont" id=38]
 size = 50
@@ -299,6 +308,9 @@ script = SubResource( 2 )
 anchor_right = 1.0
 margin_bottom = 144.0
 color = Color( 0.172549, 0.517647, 0.611765, 1 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="round_label" type="Label" parent="canvas/top_panel"]
 anchor_left = 0.5
@@ -367,6 +379,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_top = -200.0
 color = Color( 0.172549, 0.517647, 0.611765, 1 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="shop" type="Button" parent="canvas/bottom_panel"]
 margin_left = 603.0
@@ -478,6 +493,9 @@ margin_left = 32.0
 margin_top = -453.0
 margin_right = -32.0
 margin_bottom = 64.0
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="HBoxContainer" type="HBoxContainer" parent="canvas/card_shop"]
 anchor_right = 1.0
@@ -509,14 +527,18 @@ invocable = false
 [node name="_dialog_widget" parent="canvas/card_shop" instance=ExtResource( 11 )]
 barrier_dismissible = true
 
-[node name="dialog_panel" type="Panel" parent="canvas"]
+[node name="dialog_panel" type="ColorRect" parent="canvas"]
 visible = false
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
 margin_top = -288.0
 margin_bottom = 4.0
+color = Color( 0.15625, 0.15625, 0.15625, 1 )
 script = ExtResource( 10 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="avatar" type="TextureRect" parent="canvas/dialog_panel"]
 anchor_top = 0.5
@@ -525,7 +547,7 @@ margin_left = 32.0
 margin_top = -114.0
 margin_right = 252.0
 margin_bottom = 106.0
-texture = SubResource( 37 )
+texture = ExtResource( 12 )
 expand = true
 
 [node name="text_box" type="RichTextLabel" parent="canvas/dialog_panel"]
@@ -536,7 +558,6 @@ margin_top = 32.0
 margin_right = -32.0
 margin_bottom = -32.0
 theme = SubResource( 39 )
-text = "太好了，太好了，总算把这一带最有才干的人请来了，这下我们有希望了。"
 scroll_active = false
 
 [node name="Tween" type="Tween" parent="canvas/dialog_panel"]
@@ -557,6 +578,9 @@ rect_pivot_offset = Vector2( 80, 80 )
 texture = ExtResource( 2 )
 expand = true
 script = SubResource( 41 )
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Tween" type="Tween" parent="canvas/sand_clock"]
 
@@ -606,3 +630,4 @@ script = SubResource( 31 )
 [connection signal="turn_submitted" from="globals/p1" to="globals/p1" method="_on_p1_turn_submitted"]
 [connection signal="pressed" from="canvas/bottom_panel/shop" to="canvas/bottom_panel/shop" method="_on_shop_pressed"]
 [connection signal="pressed" from="canvas/bottom_panel/submit" to="canvas/bottom_panel/submit" method="_on_submit_pressed"]
+[connection signal="dismissed" from="canvas/dialog_panel/_dialog_widget" to="canvas/dialog_panel" method="_on_any_click"]

@@ -1,10 +1,12 @@
-extends Panel
+extends Control
 class_name DialogPanel
 
 onready var text_box = $text_box
 onready var avatar = $avatar
 
-const TYPEWRITER_SPEED = 8
+const TYPEWRITER_SPEED = 16
+
+signal any_clicked()
 
 func show_text(s: String):
 	assert(not $Tween.is_active())
@@ -23,5 +25,21 @@ func show_text(s: String):
 	
 func show_choices():
 	visible = true
+	
+func _input(event: InputEvent) -> void:
+	if Q.is_tap_event(event):
+		_on_any_click()
+		
+func _on_any_click():
+	emit_signal("any_clicked")
+	
+func play(texts: Array):
+	visible = true
+	for t in texts:
+		yield(self.show_text(t), "completed")
+		yield(self, "any_clicked")
+	visible = false
+	
+
 	
 

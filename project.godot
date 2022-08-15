@@ -14,7 +14,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://scripts/libs/building.gd"
 }, {
-"base": "Panel",
+"base": "Control",
 "class": "DialogPanel",
 "language": "GDScript",
 "path": "res://scripts/ui/dialog_panel.gd"
@@ -23,11 +23,6 @@ _global_script_classes=[ {
 "class": "ResLabel",
 "language": "GDScript",
 "path": "res://scripts/ui/res_label.gd"
-}, {
-"base": "Node",
-"class": "Story",
-"language": "GDScript",
-"path": "res://scripts/libs/story.gd"
 }, {
 "base": "Node",
 "class": "TurnBasedDirector",
@@ -43,7 +38,6 @@ _global_script_class_icons={
 "Building": "",
 "DialogPanel": "",
 "ResLabel": "",
-"Story": "",
 "TurnBasedDirector": "",
 "TurnBasedPlayer": ""
 }
