@@ -66,11 +66,9 @@ func get_drag_data(position: Vector2):
 "
 
 [node name="card" type="Button"]
-margin_left = 314.0
-margin_top = 438.0
-margin_right = 580.0
-margin_bottom = 789.0
-rect_min_size = Vector2( 266, 351 )
+margin_right = 207.0
+margin_bottom = 274.0
+rect_min_size = Vector2( 207, 274 )
 theme = SubResource( 23 )
 shortcut_in_tooltip = false
 icon = ExtResource( 1 )

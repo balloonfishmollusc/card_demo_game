@@ -16,6 +16,8 @@
 [sub_resource type="GDScript" id=40]
 script/source = "extends Node2D
 
+export var enabled = true
+
 var texts = [
 	\"太好了，太好了，总算把这一带最有才干的人请来了，这下我们有希望了。\",
 	\"很高兴见到你！接下来，希望你能协助我完成这件关乎我们未来的任务——击退洪水！ \",
@@ -28,6 +30,8 @@ var texts = [
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	if not enabled:
+		return
 	var panel = $canvas/dialog_panel
 	panel.play(texts)
 "
@@ -345,33 +349,30 @@ valign = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -551.0
+margin_top = -474.0
 margin_bottom = -200.0
 mouse_filter = 2
+alignment = 1
 
 [node name="card2" parent="canvas/cards" instance=ExtResource( 1 )]
-margin_left = 0.0
-margin_top = 0.0
-margin_right = 266.0
-margin_bottom = 351.0
+margin_left = 14.0
+margin_right = 221.0
 
 [node name="card3" parent="canvas/cards" instance=ExtResource( 1 )]
-margin_left = 270.0
-margin_top = 0.0
-margin_right = 536.0
-margin_bottom = 351.0
+margin_left = 225.0
+margin_right = 432.0
 
 [node name="card4" parent="canvas/cards" instance=ExtResource( 1 )]
-margin_left = 540.0
-margin_top = 0.0
-margin_right = 806.0
-margin_bottom = 351.0
+margin_left = 436.0
+margin_right = 643.0
 
 [node name="card5" parent="canvas/cards" instance=ExtResource( 1 )]
-margin_left = 810.0
-margin_top = 0.0
-margin_right = 1076.0
-margin_bottom = 351.0
+margin_left = 647.0
+margin_right = 854.0
+
+[node name="card6" parent="canvas/cards" instance=ExtResource( 1 )]
+margin_left = 858.0
+margin_right = 1065.0
 
 [node name="bottom_panel" type="ColorRect" parent="canvas"]
 anchor_top = 1.0
@@ -505,21 +506,18 @@ alignment = 1
 
 [node name="card2" parent="canvas/card_shop/HBoxContainer" instance=ExtResource( 1 )]
 margin_left = 45.0
-margin_top = 0.0
 margin_right = 311.0
 margin_bottom = 517.0
 invocable = false
 
 [node name="card3" parent="canvas/card_shop/HBoxContainer" instance=ExtResource( 1 )]
 margin_left = 375.0
-margin_top = 0.0
 margin_right = 641.0
 margin_bottom = 517.0
 invocable = false
 
 [node name="card4" parent="canvas/card_shop/HBoxContainer" instance=ExtResource( 1 )]
 margin_left = 705.0
-margin_top = 0.0
 margin_right = 971.0
 margin_bottom = 517.0
 invocable = false
