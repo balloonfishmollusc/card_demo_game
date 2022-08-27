@@ -5,9 +5,8 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Card
 
-export(String) var prefab
-
 func _on_invoke(grid_pos):
+	var prefab = \"res://prefabs/buildings/%s.tscn\" % self.name
 	Q.get_world_map().place_building(prefab, grid_pos)
 "
 

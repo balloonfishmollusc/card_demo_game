@@ -1,6 +1,5 @@
-[gd_scene load_steps=49 format=2]
+[gd_scene load_steps=46 format=2]
 
-[ext_resource path="res://prefabs/cards/base/card.tscn" type="PackedScene" id=1]
 [ext_resource path="res://arts/ui/anims/sand_clock.png" type="Texture" id=2]
 [ext_resource path="res://arts/world/grid.png" type="Texture" id=3]
 [ext_resource path="res://arts/fonts/MFYueYuan_Noncommercial-Regular.tres" type="DynamicFontData" id=4]
@@ -63,18 +62,25 @@ var tech_points: int = 0
 
 # 科技等级对应的点数
 const tech_levels = [
-	10,25,50,100,200,400,650,1000,1500,2000
+	0,
+	10,25,50,100,200,400,650,1000,1500,2000,
+	9999
 ]
 
 func get_tech_level() -> int:
-	for i in range(len(tech_levels)):
-		if self.tech_points >= tech_levels[i]:
-			return i+1
-	return 0
+	var i = -1
+	for lv in tech_levels:
+		if self.tech_points >= lv:
+			i += 1
+	return i
 
 func get_tech_progress():
-	var curr_level = get_tech_level()
-	return Vector2(tech_points, tech_levels[curr_level])
+	var i = get_tech_level()
+	return Vector3(
+		tech_levels[i],
+		tech_points,
+		tech_levels[i+1]
+	)
 
 func _on_p1_turn_ready(player) -> void:
 	pass
@@ -115,23 +121,6 @@ font_data = ExtResource( 4 )
 [sub_resource type="Theme" id=34]
 default_font = SubResource( 33 )
 
-[sub_resource type="StyleBoxTexture" id=4]
-texture = ExtResource( 5 )
-region_rect = Rect2( 0, 0, 256, 128 )
-modulate_color = Color( 0.313726, 0.564706, 0.384314, 1 )
-
-[sub_resource type="GDScript" id=28]
-script/source = "extends Button
-
-func _on_shop_pressed() -> void:
-	Q.get_card_shop().visible = true
-	
-"
-
-[sub_resource type="DynamicFont" id=5]
-size = 36
-font_data = ExtResource( 4 )
-
 [sub_resource type="StyleBoxTexture" id=6]
 texture = ExtResource( 5 )
 region_rect = Rect2( 0, 0, 256, 128 )
@@ -143,6 +132,10 @@ script/source = "extends Button
 func _on_submit_pressed() -> void:
 	Q.get_p1().state = TurnBasedPlayer.State.Submitted
 "
+
+[sub_resource type="DynamicFont" id=5]
+size = 36
+font_data = ExtResource( 4 )
 
 [sub_resource type="GDScript" id=12]
 script/source = "extends ResLabel
@@ -172,11 +165,9 @@ onready var prog_bar: ProgressBar = $ProgressBar
 onready var label: Label = $Label
 
 func _process(delta: float) -> void:
-	var tech_progress: Vector2 = Q.get_p1().get_tech_progress()
-	prog_bar.value = tech_progress.x / tech_progress.y * 100
-	label.text = \"Lv. %d\" % Q.get_p1().get_tech_level()
-	
-	
+	var progress: Vector3 = Q.get_p1().get_tech_progress()
+	prog_bar.value = (progress.y-progress.x) / (progress.z-progress.x) * 100
+	label.text = \"Lv. %d (%d/%d)\" % [Q.get_p1().get_tech_level(), progress.y, progress.z]
 "
 
 [sub_resource type="StyleBoxFlat" id=46]
@@ -207,7 +198,6 @@ func play_anim():
 	# idle
 	yield(get_tree().create_timer(0.1), \"timeout\")
 	# fill
-	yield(get_tree().create_timer(0.48), \"timeout\")
 	yield(get_tree().create_timer(0.48), \"timeout\")
 	# idle
 	yield(get_tree().create_timer(0.16), \"timeout\")
@@ -462,61 +452,29 @@ anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 128.0
-margin_top = -540.0
+margin_top = -464.0
 margin_right = -28.0
-margin_bottom = -241.0
+margin_bottom = -190.0
 mouse_filter = 2
 alignment = 2
 
 [node name="采石场" parent="canvas/cards" instance=ExtResource( 14 )]
-margin_left = 506.0
-margin_right = 713.0
-margin_bottom = 299.0
-
-[node name="学院" parent="canvas/cards" instance=ExtResource( 14 )]
 margin_left = 717.0
 margin_right = 924.0
-margin_bottom = 299.0
-prefab = "res://prefabs/buildings/学院.tscn"
+margin_bottom = 274.0
 
 [node name="bottom_panel" type="ColorRect" parent="canvas"]
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -241.0
+margin_top = -190.0
 color = Color( 0.172549, 0.517647, 0.611765, 1 )
 
-[node name="shop" type="Button" parent="canvas/bottom_panel"]
-margin_left = 600.0
-margin_top = 30.0
-margin_right = 800.0
-margin_bottom = 130.0
-focus_mode = 0
-custom_styles/hover = SubResource( 4 )
-custom_styles/pressed = SubResource( 4 )
-custom_styles/focus = SubResource( 4 )
-custom_styles/disabled = SubResource( 4 )
-custom_styles/normal = SubResource( 4 )
-shortcut_in_tooltip = false
-enabled_focus_mode = 0
-script = SubResource( 28 )
-
-[node name="Label" type="Label" parent="canvas/bottom_panel/shop"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-custom_fonts/font = SubResource( 5 )
-text = "商店"
-align = 1
-valign = 1
-__meta__ = {
-"_edit_lock_": true
-}
-
 [node name="submit" type="Button" parent="canvas/bottom_panel"]
-margin_left = 847.0
-margin_top = 30.0
-margin_right = 1047.0
-margin_bottom = 130.0
+margin_left = 881.0
+margin_top = 52.0
+margin_right = 1048.0
+margin_bottom = 152.0
 focus_mode = 0
 custom_styles/hover = SubResource( 6 )
 custom_styles/pressed = SubResource( 6 )
@@ -531,7 +489,7 @@ script = SubResource( 29 )
 anchor_right = 1.0
 anchor_bottom = 1.0
 custom_fonts/font = SubResource( 5 )
-text = "结束回合"
+text = "结束"
 align = 1
 valign = 1
 __meta__ = {
@@ -591,10 +549,10 @@ valign = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = 419.0
-margin_top = -76.0
-margin_right = -28.0
-margin_bottom = -17.0
+margin_left = 395.0
+margin_top = -122.0
+margin_right = -232.0
+margin_bottom = -43.0
 color = Color( 1, 1, 1, 0.266667 )
 script = SubResource( 43 )
 
@@ -603,6 +561,9 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 custom_styles/fg = SubResource( 46 )
 percent_visible = false
+__meta__ = {
+"_edit_lock_": true
+}
 
 [node name="Label" type="Label" parent="canvas/bottom_panel/tech_bar"]
 anchor_right = 1.0
@@ -610,43 +571,9 @@ anchor_bottom = 1.0
 theme = SubResource( 45 )
 align = 1
 valign = 1
-
-[node name="card_shop" type="Panel" parent="canvas"]
-visible = false
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
-margin_left = 32.0
-margin_top = -453.0
-margin_right = -32.0
-margin_bottom = 64.0
 __meta__ = {
 "_edit_lock_": true
 }
-
-[node name="HBoxContainer" type="HBoxContainer" parent="canvas/card_shop"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-custom_constants/separation = 64
-alignment = 1
-
-[node name="card2" parent="canvas/card_shop/HBoxContainer" instance=ExtResource( 1 )]
-margin_left = 133.0
-margin_right = 340.0
-margin_bottom = 517.0
-
-[node name="card3" parent="canvas/card_shop/HBoxContainer" instance=ExtResource( 1 )]
-margin_left = 404.0
-margin_right = 611.0
-margin_bottom = 517.0
-
-[node name="card4" parent="canvas/card_shop/HBoxContainer" instance=ExtResource( 1 )]
-margin_left = 675.0
-margin_right = 882.0
-margin_bottom = 517.0
-
-[node name="_dialog_widget" parent="canvas/card_shop" instance=ExtResource( 11 )]
-barrier_dismissible = true
 
 [node name="dialog_panel" type="ColorRect" parent="canvas"]
 visible = false
@@ -784,6 +711,5 @@ __meta__ = {
 [connection signal="round_started" from="globals/turn_based" to="canvas/top_panel/round_label" method="_on_level_director_round_started"]
 [connection signal="turn_ready" from="globals/p1" to="globals/p1" method="_on_p1_turn_ready"]
 [connection signal="turn_submitted" from="globals/p1" to="globals/p1" method="_on_p1_turn_submitted"]
-[connection signal="pressed" from="canvas/bottom_panel/shop" to="canvas/bottom_panel/shop" method="_on_shop_pressed"]
 [connection signal="pressed" from="canvas/bottom_panel/submit" to="canvas/bottom_panel/submit" method="_on_submit_pressed"]
 [connection signal="dismissed" from="canvas/dialog_panel/_dialog_widget" to="canvas/dialog_panel" method="_on_any_click"]

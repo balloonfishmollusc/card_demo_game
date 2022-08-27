@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://prefabs/buildings/base/building.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Building
+
+func _on_round_end(i):
+	Q.get_p1().cowries *= 1.04
+"
+
+[node name="银行" instance=ExtResource( 1 )]
+script = SubResource( 1 )

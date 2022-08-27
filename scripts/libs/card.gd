@@ -11,6 +11,8 @@ export var invocable: bool = true
 func _ready() -> void:
 	connect("button_down", self, "_on_card_button_down")
 	connect("button_up", self, "_on_card_button_up")
+	# for debug
+	$Label.text = self.name
 
 func _on_card_button_down() -> void:
 	start_pos = self.rect_global_position
