@@ -27,16 +27,11 @@ func add_progress(inc: int):
 func _on_round_start_internal(i):
 	if not is_completed():
 		add_progress(1)
-	else:
-		_on_round_start(i)
 
 func _on_round_end_internal(i):
 	if is_completed():
 		_on_round_end(i)
 
-func _on_round_start(i):
-	pass
-	
 func _on_round_end(i):
 	pass
 

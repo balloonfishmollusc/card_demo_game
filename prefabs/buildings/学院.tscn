@@ -6,11 +6,11 @@
 script/source = "extends Building
 
 func _on_round_end(i):
-	Q.get_p1().cowries += 10
+	Q.get_p1().tech_points += 5
 "
 
-[node name="采石场" instance=ExtResource( 1 )]
+[node name="学院" instance=ExtResource( 1 )]
 script = SubResource( 1 )
 
 [node name="Label" parent="ColorRect" index="0"]
-text = "采石场"
+text = "学院"

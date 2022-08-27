@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=2]
+[gd_scene load_steps=49 format=2]
 
 [ext_resource path="res://prefabs/cards/base/card.tscn" type="PackedScene" id=1]
 [ext_resource path="res://arts/ui/anims/sand_clock.png" type="Texture" id=2]
@@ -59,6 +59,22 @@ script/source = "extends TurnBasedPlayer
 # Resources
 var cowries: int = 0
 var energy: int = 20
+var tech_points: int = 0
+
+# 科技等级对应的点数
+const tech_levels = [
+	10,25,50,100,200,400,650,1000,1500,2000
+]
+
+func get_tech_level() -> int:
+	for i in range(len(tech_levels)):
+		if self.tech_points >= tech_levels[i]:
+			return i+1
+	return 0
+
+func get_tech_progress():
+	var curr_level = get_tech_level()
+	return Vector2(tech_points, tech_levels[curr_level])
 
 func _on_p1_turn_ready(player) -> void:
 	pass
@@ -148,6 +164,30 @@ script/source = "extends ResLabel
 func _get_value():
 	return Q.get_p1().cowries
 "
+
+[sub_resource type="GDScript" id=43]
+script/source = "extends ColorRect
+
+onready var prog_bar: ProgressBar = $ProgressBar
+onready var label: Label = $Label
+
+func _process(delta: float) -> void:
+	var tech_progress: Vector2 = Q.get_p1().get_tech_progress()
+	prog_bar.value = tech_progress.x / tech_progress.y * 100
+	label.text = \"Lv. %d\" % Q.get_p1().get_tech_level()
+	
+	
+"
+
+[sub_resource type="StyleBoxFlat" id=46]
+bg_color = Color( 0.580392, 0.627451, 1, 1 )
+
+[sub_resource type="DynamicFont" id=44]
+size = 32
+font_data = ExtResource( 4 )
+
+[sub_resource type="Theme" id=45]
+default_font = SubResource( 44 )
 
 [sub_resource type="DynamicFont" id=38]
 size = 50
@@ -421,31 +461,36 @@ valign = 1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -474.0
-margin_bottom = -200.0
+margin_left = 128.0
+margin_top = -540.0
+margin_right = -28.0
+margin_bottom = -241.0
 mouse_filter = 2
-alignment = 1
+alignment = 2
 
 [node name="采石场" parent="canvas/cards" instance=ExtResource( 14 )]
-margin_left = 436.0
-margin_right = 643.0
-margin_bottom = 274.0
+margin_left = 506.0
+margin_right = 713.0
+margin_bottom = 299.0
+
+[node name="学院" parent="canvas/cards" instance=ExtResource( 14 )]
+margin_left = 717.0
+margin_right = 924.0
+margin_bottom = 299.0
+prefab = "res://prefabs/buildings/学院.tscn"
 
 [node name="bottom_panel" type="ColorRect" parent="canvas"]
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_top = -200.0
+margin_top = -241.0
 color = Color( 0.172549, 0.517647, 0.611765, 1 )
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="shop" type="Button" parent="canvas/bottom_panel"]
-margin_left = 603.0
-margin_top = 41.0
-margin_right = 803.0
-margin_bottom = 141.0
+margin_left = 600.0
+margin_top = 30.0
+margin_right = 800.0
+margin_bottom = 130.0
 focus_mode = 0
 custom_styles/hover = SubResource( 4 )
 custom_styles/pressed = SubResource( 4 )
@@ -468,10 +513,10 @@ __meta__ = {
 }
 
 [node name="submit" type="Button" parent="canvas/bottom_panel"]
-margin_left = 850.0
-margin_top = 41.0
-margin_right = 1050.0
-margin_bottom = 141.0
+margin_left = 847.0
+margin_top = 30.0
+margin_right = 1047.0
+margin_bottom = 130.0
 focus_mode = 0
 custom_styles/hover = SubResource( 6 )
 custom_styles/pressed = SubResource( 6 )
@@ -542,6 +587,30 @@ theme = SubResource( 14 )
 text = "999"
 valign = 1
 
+[node name="tech_bar" type="ColorRect" parent="canvas/bottom_panel"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 419.0
+margin_top = -76.0
+margin_right = -28.0
+margin_bottom = -17.0
+color = Color( 1, 1, 1, 0.266667 )
+script = SubResource( 43 )
+
+[node name="ProgressBar" type="ProgressBar" parent="canvas/bottom_panel/tech_bar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_styles/fg = SubResource( 46 )
+percent_visible = false
+
+[node name="Label" type="Label" parent="canvas/bottom_panel/tech_bar"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = SubResource( 45 )
+align = 1
+valign = 1
+
 [node name="card_shop" type="Panel" parent="canvas"]
 visible = false
 anchor_top = 0.5
@@ -562,18 +631,18 @@ custom_constants/separation = 64
 alignment = 1
 
 [node name="card2" parent="canvas/card_shop/HBoxContainer" instance=ExtResource( 1 )]
-margin_left = 45.0
-margin_right = 311.0
+margin_left = 133.0
+margin_right = 340.0
 margin_bottom = 517.0
 
 [node name="card3" parent="canvas/card_shop/HBoxContainer" instance=ExtResource( 1 )]
-margin_left = 375.0
-margin_right = 641.0
+margin_left = 404.0
+margin_right = 611.0
 margin_bottom = 517.0
 
 [node name="card4" parent="canvas/card_shop/HBoxContainer" instance=ExtResource( 1 )]
-margin_left = 705.0
-margin_right = 971.0
+margin_left = 675.0
+margin_right = 882.0
 margin_bottom = 517.0
 
 [node name="_dialog_widget" parent="canvas/card_shop" instance=ExtResource( 11 )]
