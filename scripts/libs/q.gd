@@ -28,3 +28,6 @@ func get_rng_generator() -> RandomNumberGenerator:
 	var rng = RandomNumberGenerator.new()
 	rng.randomize()
 	return rng
+	
+func get_world_map():
+	return get_node("/root/0/world/map")

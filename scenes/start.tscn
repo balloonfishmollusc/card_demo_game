@@ -37,6 +37,6 @@ margin_top = -100.0
 margin_right = 384.0
 margin_bottom = 100.0
 theme = SubResource( 3 )
-text = "别人的大逃亡"
+text = "2"
 align = 1
 valign = 1

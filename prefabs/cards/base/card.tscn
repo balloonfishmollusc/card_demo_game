@@ -1,0 +1,31 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://arts/card/Sprite-0001.png" type="Texture" id=1]
+
+[sub_resource type="StyleBoxEmpty" id=18]
+
+[sub_resource type="StyleBoxEmpty" id=19]
+
+[sub_resource type="StyleBoxEmpty" id=20]
+
+[sub_resource type="StyleBoxEmpty" id=21]
+
+[sub_resource type="StyleBoxEmpty" id=22]
+
+[sub_resource type="Theme" id=23]
+Button/styles/disabled = SubResource( 18 )
+Button/styles/focus = SubResource( 19 )
+Button/styles/hover = SubResource( 20 )
+Button/styles/normal = SubResource( 21 )
+Button/styles/pressed = SubResource( 22 )
+
+[node name="card" type="Button"]
+margin_right = 131.0
+margin_bottom = 153.0
+rect_min_size = Vector2( 207, 274 )
+theme = SubResource( 23 )
+shortcut_in_tooltip = false
+icon = ExtResource( 1 )
+flat = true
+icon_align = 1
+expand_icon = true

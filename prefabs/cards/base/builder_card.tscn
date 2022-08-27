@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://prefabs/cards/base/card.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Card
+
+export(String) var prefab
+
+func _on_invoke(grid_pos):
+	Q.get_world_map().place_building(prefab, grid_pos)
+"
+
+[node name="builder_card" instance=ExtResource( 1 )]
+script = SubResource( 1 )

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://prefabs/cards/base/builder_card.tscn" type="PackedScene" id=1]
+
+[node name="采石场" instance=ExtResource( 1 )]
+prefab = "res://prefabs/buildings/采石场.tscn"

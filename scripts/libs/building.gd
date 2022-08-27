@@ -51,5 +51,5 @@ func get_description():
 
 func _on_building_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if Q.is_tap_event(event):
-		var map = get_node("/root/0/world/map")
+		var map = get_node("/root/0/world/map_background")
 		map.select_building(self)

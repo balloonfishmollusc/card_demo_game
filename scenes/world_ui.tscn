@@ -21,6 +21,7 @@ func enable_tile_indicator(world_pos: Vector2):
 func disable_tile_indicator():
 	var item = $tile_indicator
 	item.visible = false;
+	return grid.world_to_map(item.position);
 	
 func enable_selection_indicator(world_pos: Vector2):
 	var item = $selection_indicator
