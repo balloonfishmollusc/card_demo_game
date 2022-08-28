@@ -1,0 +1,41 @@
+[gd_scene load_steps=2 format=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Control
+
+export(bool) var locked = false
+
+func _ready() -> void:
+	var turn_based = Q.get_turn_based()
+	turn_based.connect(\"round_started\", self, \"refresh_card\")
+	
+func refresh_card(i):
+	# 锁定状态不刷新卡牌
+	if locked: return
+	# 清除原有卡牌
+	if get_child_count() != 0:
+		get_child(0).delete()
+	
+	# 随机刷出新卡牌
+	var names = [\"学院\", \"渔港\", \"采石场\", \"银行\"]
+	var idx = Q.get_rng_generator().randi_range(0, len(names)-1)
+	
+	var prefab = \"res://prefabs/cards/base/builder_card.tscn\"
+	var obj = load(prefab).instance()
+	obj.name = names[idx]
+	obj.get_node(\"Label\").text = names[idx]
+	add_child(obj)
+"
+
+[node name="card_slot" type="ColorRect"]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -540.0
+margin_top = -1080.0
+margin_right = -340.0
+margin_bottom = -840.0
+rect_min_size = Vector2( 240, 300 )
+color = Color( 0.0941176, 0.270588, 0.321569, 1 )
+script = SubResource( 1 )

@@ -26,12 +26,17 @@ func _on_card_button_up() -> void:
 	var end_grid_pos = ui.disable_tile_indicator()
 	if _can_use():
 		_on_invoke(end_grid_pos)
+		self.delete()
+		
+func delete():
+	self.name = '_'
+	self.queue_free()
 	
 func _on_invoke(grid_pos):
 	print("card invocation!", grid_pos)
 
 func _can_use() -> bool:
-	var container = get_parent() as HBoxContainer
+	var container = get_parent().get_parent() as HBoxContainer
 	return get_global_mouse_position().y < container.rect_position.y
 
 func _process(delta: float) -> void:
