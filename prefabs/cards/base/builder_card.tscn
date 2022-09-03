@@ -5,9 +5,13 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Card
 
+export(int) var time = 3
+
 func _on_invoke(grid_pos):
 	var prefab = \"res://prefabs/buildings/%s.tscn\" % self.name
-	Q.get_world_map().place_building(prefab, grid_pos)
+	var obj: Building = load(prefab).instance()
+	obj.progress.y = time
+	Q.get_world_map().place_building(obj, grid_pos)
 "
 
 [node name="builder_card" instance=ExtResource( 1 )]

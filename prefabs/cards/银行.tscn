@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://prefabs/cards/base/builder_card.tscn" type="PackedScene" id=1]
+
+[node name="银行" instance=ExtResource( 1 )]
+margin_right = 131.0
+margin_bottom = 153.0
+price = 150
+cost = 1
+description = "钱生钱，利生利。"
+building_time = 5
+
+[node name="data_label" parent="." index="0"]
+margin_top = 14.0
+margin_bottom = 220.0

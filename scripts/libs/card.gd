@@ -2,17 +2,24 @@ extends Button
 
 class_name Card
 
+export(int) var price = 0
+export(int) var cost = 0
+export(String) var description = ""
+
 var on_drag: bool = false
 var start_pos: Vector2
 onready var ui = get_tree().root.get_node("0/world/ui")
 
-export var invocable: bool = true
-
 func _ready() -> void:
 	connect("button_down", self, "_on_card_button_down")
 	connect("button_up", self, "_on_card_button_up")
-	# for debug
-	$Label.text = self.name
+	
+	$data_label.text = JSON.print({
+		"name": self.name,
+		"price": self.price,
+		"cost": self.cost,
+		"time": self.time
+	}, "  ")
 
 func _on_card_button_down() -> void:
 	start_pos = self.rect_global_position
@@ -26,6 +33,8 @@ func _on_card_button_up() -> void:
 	var end_grid_pos = ui.disable_tile_indicator()
 	if _can_use():
 		_on_invoke(end_grid_pos)
+		Q.get_p1().cowries -= price
+		Q.get_p1().energy -= cost
 		self.delete()
 		
 func delete():
@@ -55,6 +64,4 @@ func _process(delta: float) -> void:
 		ui.disable_tile_indicator()
 
 func get_drag_data(position: Vector2):
-	if not invocable:
-		return
 	on_drag = true

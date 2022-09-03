@@ -20,10 +20,8 @@ func refresh_card(i):
 	var names = [\"学院\", \"渔港\", \"采石场\", \"银行\"]
 	var idx = Q.get_rng_generator().randi_range(0, len(names)-1)
 	
-	var prefab = \"res://prefabs/cards/base/builder_card.tscn\"
+	var prefab = \"res://prefabs/cards/%s.tscn\" % names[idx]
 	var obj = load(prefab).instance()
-	obj.name = names[idx]
-	obj.get_node(\"Label\").text = names[idx]
 	add_child(obj)
 "
 

@@ -28,8 +28,9 @@ font_data = ExtResource( 2 )
 default_font = SubResource( 2 )
 
 [node name="card" type="Button"]
-margin_right = 131.0
-margin_bottom = 153.0
+self_modulate = Color( 1, 1, 1, 0.243137 )
+margin_right = 207.0
+margin_bottom = 274.0
 rect_min_size = Vector2( 207, 274 )
 theme = SubResource( 23 )
 shortcut_in_tooltip = false
@@ -38,14 +39,12 @@ flat = true
 icon_align = 1
 expand_icon = true
 
-[node name="Label" type="Label" parent="."]
+[node name="data_label" type="Label" parent="."]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = -5.5
-margin_top = 14.0
+margin_left = -91.5
+margin_top = 22.0
 margin_right = 87.5
-margin_bottom = 44.0
+margin_bottom = 242.0
 theme = SubResource( 24 )
 text = "名称"
-align = 1
-valign = 1

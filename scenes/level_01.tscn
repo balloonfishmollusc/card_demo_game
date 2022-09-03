@@ -689,14 +689,17 @@ script/source = "extends TileMap
 
 var buildings_data = {}
 
-func place_building(prefab, grid_pos):
-	if grid_pos in buildings_data:
-		print(\"Cannot place building!!\")
-		return
-
-	var obj: Node2D = load(prefab).instance()
-	get_node(\"/root/0/world/buildings\").add_child(obj)
+func place_building(obj: Node2D, grid_pos):
 	obj.name = str(grid_pos) + \" \" + obj.name
+	if grid_pos in buildings_data:
+		var b = buildings_data[grid_pos]
+		if b.name == obj.name:
+			b.progress.x = 0
+			print(\"reset progress to level up\")
+		else:
+			print(\"cannot place building!!\")
+		return
+	get_node(\"/root/0/world/buildings\").add_child(obj)
 	obj.position = map_to_world(grid_pos) + cell_size*0.5
 	buildings_data[grid_pos] = obj
 "
@@ -817,7 +820,7 @@ script = SubResource( 3 )
 visible = false
 anchor_right = 1.0
 margin_top = 144.0
-margin_bottom = 274.0
+margin_bottom = 336.0
 script = SubResource( 35 )
 
 [node name="Label" type="Label" parent="canvas/info_panel"]

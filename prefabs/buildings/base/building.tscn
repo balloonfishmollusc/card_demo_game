@@ -36,7 +36,7 @@ func _on_building_progress_changed(value: Vector2) -> void:
 extents = Vector2( 64, 64 )
 
 [sub_resource type="DynamicFont" id=5]
-size = 24
+size = 32
 font_data = ExtResource( 2 )
 
 [sub_resource type="Theme" id=6]
