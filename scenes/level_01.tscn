@@ -1,4 +1,4 @@
-[gd_scene load_steps=48 format=2]
+[gd_scene load_steps=46 format=2]
 
 [ext_resource path="res://prefabs/ui/card_slot.tscn" type="PackedScene" id=1]
 [ext_resource path="res://arts/ui/anims/sand_clock.png" type="Texture" id=2]
@@ -107,12 +107,18 @@ func _on_level_director_round_started(i) -> void:
 [sub_resource type="GDScript" id=35]
 script/source = "extends Panel
 
-func enable(building):
-	visible = true
-	$Label.text = building.get_description()
+var building: Building = null
+
+func enable(b: Building):
+	self.building = b
 	
 func disable():
-	visible = false
+	self.building = null
+	
+func _process(delta: float) -> void:
+	self.visible = self.building != null
+	if self.visible:
+		$Label.text = building.get_description()
 "
 
 [sub_resource type="DynamicFont" id=33]
@@ -217,35 +223,6 @@ func play_anim():
 	visible = false
 	emit_signal(\"animation_finished\")
 "
-
-[sub_resource type="Shader" id=9]
-code = "shader_type canvas_item;
-
-uniform vec2 size = vec2(10, 20);
-uniform float cell_size = 16;
-uniform float cell_spacing = 2;
-uniform vec4 line_color : hint_color;
-
-varying vec2 v;
-
-void vertex() {
-	v = VERTEX;
-}
-
-void fragment() {
-	COLOR.a = 0.;
-	float step_size = cell_size + cell_spacing;
-	float ratio = cell_spacing / step_size;
-	// Grid
-	if (fract(v.x / step_size) < ratio || fract(v.y / step_size) < ratio) COLOR = line_color;
-}"
-
-[sub_resource type="ShaderMaterial" id=10]
-shader = SubResource( 9 )
-shader_param/size = Vector2( 100, 100 )
-shader_param/cell_size = 128.0
-shader_param/cell_spacing = 6.0
-shader_param/line_color = Color( 1, 1, 1, 0.156863 )
 
 [sub_resource type="GDScript" id=27]
 script/source = "extends Sprite
@@ -689,19 +666,21 @@ script/source = "extends TileMap
 
 var buildings_data = {}
 
-func place_building(obj: Node2D, grid_pos):
+func place_building(obj: Node2D, grid_pos) -> bool:
 	obj.name = str(grid_pos) + \" \" + obj.name
 	if grid_pos in buildings_data:
-		var b = buildings_data[grid_pos]
-		if b.name == obj.name:
-			b.progress.x = 0
+		var b: Building = buildings_data[grid_pos]
+		if b.name == obj.name and b.is_completed():
+			b.reset_progress()
 			print(\"reset progress to level up\")
+			return true
 		else:
 			print(\"cannot place building!!\")
-		return
+			return false
 	get_node(\"/root/0/world/buildings\").add_child(obj)
 	obj.position = map_to_world(grid_pos) + cell_size*0.5
 	buildings_data[grid_pos] = obj
+	return true
 "
 
 [sub_resource type="TileSet" id=11]
@@ -886,6 +865,7 @@ margin_right = 1080.0
 margin_bottom = 300.0
 
 [node name="ColorRect" type="ColorRect" parent="canvas/cards"]
+visible = false
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -1065,19 +1045,6 @@ __meta__ = {
 [node name="_dialog_widget" parent="canvas/sand_clock" instance=ExtResource( 11 )]
 
 [node name="world" type="Node2D" parent="."]
-
-[node name="__hidden__" type="Node" parent="world"]
-
-[node name="grid_shader" type="ColorRect" parent="world/__hidden__"]
-visible = false
-material = SubResource( 10 )
-margin_left = -815.0
-margin_top = -809.0
-margin_right = 3631.0
-margin_bottom = 1789.0
-__meta__ = {
-"_edit_lock_": true
-}
 
 [node name="map_background" type="Sprite" parent="world"]
 self_modulate = Color( 0.717647, 0.717647, 0.717647, 1 )

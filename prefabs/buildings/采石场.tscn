@@ -7,17 +7,19 @@ script/source = "extends \"res://scripts/libs/building.gd\"
 
 func _on_round_end(i):
 	var X = self.level
-	var Y = self.get_terrain_coef()
+	var Y = 1.0
+	match self.terrain:
+		Terrain.FLATLANDS: Y = 1.0;
+		Terrain.MOUNTAIN: Y = 2.0;
+		Terrain.OCEAN: Y = 0.0;
+		Terrain.PORT: Y = 0.2;
+		Terrain.DESERT: Y = 0.7;
 	var Z = self.working_rounds
 	Q.get_p1().cowries += max(Y*X*100-Z*20, -35)
 "
 
 [node name="采石场" instance=ExtResource( 1 )]
 script = SubResource( 1 )
-price = 190
-building_time = 6
-cost = 3
-description = "高风险，高回报。取之有尽，用之易竭。"
 
 [node name="Label" parent="ColorRect" index="0"]
 text = "采石场"

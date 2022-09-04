@@ -7,17 +7,19 @@ script/source = "extends Building
 
 func _on_round_end(i):
 	var X = self.level
-	var Y = self.get_terrain_coef()
+	var Y = 1.0
+	match self.terrain:
+		Terrain.FLATLANDS: Y = 1.0;
+		Terrain.MOUNTAIN: Y = 0.2;
+		Terrain.OCEAN: Y = 2.0;
+		Terrain.PORT: Y = 2.0;
+		Terrain.DESERT: Y = 0.0;
 	var Z = self.working_rounds
 	Q.get_p1().cowries += max(Y*X*30-Z*5, -10)
 "
 
 [node name="渔港" instance=ExtResource( 1 )]
 script = SubResource( 1 )
-price = 100
-building_time = 5
-cost = 2
-description = "钓鱼虽好，不能贪多。"
 
 [node name="Label" parent="ColorRect" index="0"]
 text = "渔港"

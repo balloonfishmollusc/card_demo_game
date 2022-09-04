@@ -4,22 +4,34 @@ class_name Building
 signal completed()
 signal progress_changed(value)
 
+enum Terrain {
+	FLATLANDS,	# 平原
+	MOUNTAIN,	# 山地
+	OCEAN,		# 海洋
+	PORT,		# 港口
+	DESERT,		# 沙漠
+	UNKNOWN		# 未知	
+}
+
+
 var progress = Vector2(0, 3)	# 进度/最大进度
 var level: int = 0				# 默认0级，建造完为1级
 var working_rounds: int = 0		# 已经工作的回合数
+var terrain = Terrain.UNKNOWN
 
 func is_completed() -> bool:
 	return progress.x >= progress.y
-
-func get_terrain_coef() -> float:
-	return 1.0
 
 func _ready():
 	var turn_based = Q.get_turn_based()
 	turn_based.connect("round_started", self, "_on_round_start_internal")
 	turn_based.connect("round_ended", self, "_on_round_end_internal")
 	connect("input_event", self, "_on_building_input_event")
-	
+
+func reset_progress():
+	progress.x = 0
+	emit_signal("progress_changed", progress)
+
 func add_progress(inc: int):
 	assert(not is_completed())
 	progress.x = min(progress.x+inc, progress.y)

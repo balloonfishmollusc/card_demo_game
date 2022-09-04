@@ -3,7 +3,8 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
-export(bool) var locked = false
+func is_locked() -> bool:
+	return $lock.pressed
 
 func _ready() -> void:
 	var turn_based = Q.get_turn_based()
@@ -11,10 +12,10 @@ func _ready() -> void:
 	
 func refresh_card(i):
 	# 锁定状态不刷新卡牌
-	if locked: return
+	if is_locked(): return
 	# 清除原有卡牌
-	if get_child_count() != 0:
-		get_child(0).delete()
+	if get_child_count() > 1:
+		get_child(1).delete()
 	
 	# 随机刷出新卡牌
 	var names = [\"学院\", \"渔港\", \"采石场\", \"银行\"]
@@ -37,3 +38,14 @@ margin_bottom = -840.0
 rect_min_size = Vector2( 240, 300 )
 color = Color( 0.0941176, 0.270588, 0.321569, 1 )
 script = SubResource( 1 )
+
+[node name="lock" type="Button" parent="."]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = -92.0
+margin_top = -44.0
+toggle_mode = true
+shortcut_in_tooltip = false
+text = "LOCK"

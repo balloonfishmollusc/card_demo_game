@@ -32,10 +32,10 @@ func _on_card_button_up() -> void:
 	self.modulate.a = 1.0
 	var end_grid_pos = ui.disable_tile_indicator()
 	if _can_use():
-		_on_invoke(end_grid_pos)
-		Q.get_p1().cowries -= price
-		Q.get_p1().energy -= cost
-		self.delete()
+		if _on_invoke(end_grid_pos):
+			Q.get_p1().cowries -= price
+			Q.get_p1().energy -= cost
+			self.delete()
 		
 func delete():
 	self.name = '_'

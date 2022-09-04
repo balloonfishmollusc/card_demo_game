@@ -11,7 +11,7 @@ func _on_invoke(grid_pos):
 	var prefab = \"res://prefabs/buildings/%s.tscn\" % self.name
 	var obj: Building = load(prefab).instance()
 	obj.progress.y = time
-	Q.get_world_map().place_building(obj, grid_pos)
+	return Q.get_world_map().place_building(obj, grid_pos)
 "
 
 [node name="builder_card" instance=ExtResource( 1 )]

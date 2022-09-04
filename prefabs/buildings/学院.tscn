@@ -7,16 +7,18 @@ script/source = "extends Building
 
 func _on_round_end(i):
 	var X = self.level
-	var Y = self.get_terrain_coef()
+	var Y = 1.0
+	match self.terrain:
+		Terrain.FLATLANDS: Y = 1.5;
+		Terrain.MOUNTAIN: Y = 0.5;
+		Terrain.OCEAN: Y = 0.0;
+		Terrain.PORT: Y = 0.9;
+		Terrain.DESERT: Y = 0;
 	Q.get_p1().tech_points += X*Y*5
 "
 
 [node name="学院" instance=ExtResource( 1 )]
 script = SubResource( 1 )
-price = 150
-building_time = 4
-cost = 2
-description = "自由的学术，光明的未来。"
 
 [node name="Label" parent="ColorRect" index="0"]
 text = "学院"
