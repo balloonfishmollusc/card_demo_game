@@ -8,7 +8,7 @@ margin_bottom = 153.0
 price = 150
 cost = 2
 description = "自由的学术，光明的未来。"
-building_time = 4
+time = 4
 
 [node name="data_label" parent="." index="0"]
 margin_top = 14.0

@@ -640,6 +640,7 @@ func place_building(obj: Node2D, grid_pos) -> bool:
 		var b: Building = dt.building
 		if b.name == obj.name and b.is_completed():
 			b.level += 1
+			select_grid(grid_pos)
 			return true
 		else:
 			print(\"cannot place building!!\")
@@ -647,6 +648,7 @@ func place_building(obj: Node2D, grid_pos) -> bool:
 	get_node(\"/root/0/world/buildings\").add_child(obj)
 	obj.position = map_to_world(grid_pos) + cell_size*0.5
 	_data[grid_pos].building = obj
+	select_grid(grid_pos)
 	return true
 
 onready var ui = Q.get_world_ui()

@@ -6,7 +6,7 @@
 price = 190
 cost = 3
 description = "高风险，高回报。取之有尽，用之易竭。"
-building_time = 6
+time = 6
 
 [node name="data_label" parent="." index="0"]
 margin_top = 14.0

@@ -8,7 +8,7 @@ margin_bottom = 153.0
 price = 100
 cost = 2
 description = "钓鱼虽好，不能贪多。"
-building_time = 5
+time = 5
 
 [node name="data_label" parent="." index="0"]
 margin_top = 14.0

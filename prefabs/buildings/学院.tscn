@@ -5,7 +5,7 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Building
 
-func _on_round_end(i):
+func curr_value():
 	var X = self.level
 	var Y = 1.0
 	match self.get_terrain():
@@ -14,7 +14,14 @@ func _on_round_end(i):
 		Q.Terrain.OCEAN: Y = 0.0;
 		Q.Terrain.PORT: Y = 0.9;
 		Q.Terrain.DESERT: Y = 0;
-	Q.get_p1().add_tech_points(X*Y*5)
+	return X*Y*5
+
+func _on_round_end(i):
+	Q.get_p1().add_tech_points(curr_value())
+
+func get_desc():
+	var s = .get_desc()
+	return s + '\\n' + '下回合获取 %d 科技点' % curr_value()
 "
 
 [node name="学院" instance=ExtResource( 1 )]

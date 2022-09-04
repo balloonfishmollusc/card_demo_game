@@ -5,7 +5,7 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Building
 
-func _on_round_end(i):
+func curr_value():
 	var X = self.level
 	var Y = 1.0
 	match self.get_terrain():
@@ -15,7 +15,15 @@ func _on_round_end(i):
 		Q.Terrain.PORT: Y = 2.0;
 		Q.Terrain.DESERT: Y = 0.0;
 	var Z = self.working_rounds
-	Q.get_p1().cowries += max(Y*X*30-Z*5, -10)
+	return max(Y*X*30-Z*5, -10)
+	
+	
+func _on_round_end(i):
+	Q.get_p1().cowries += curr_value()
+	
+func get_desc():
+	var s = .get_desc()
+	return s + '\\n' + '下回合获取 %d 贝壳' % curr_value()
 "
 
 [node name="渔港" instance=ExtResource( 1 )]
