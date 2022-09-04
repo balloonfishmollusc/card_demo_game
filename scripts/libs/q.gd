@@ -20,11 +20,6 @@ func is_tap_event(event: InputEvent, pressed: bool=true):
 
 func get_global_mouse_position():
 	return get_camera_2d().get_global_mouse_position()
-
-func get_rng_generator() -> RandomNumberGenerator:
-	var rng = RandomNumberGenerator.new()
-	rng.randomize()
-	return rng
 	
 func get_world_map():
 	return get_node("/root/0/world/map")

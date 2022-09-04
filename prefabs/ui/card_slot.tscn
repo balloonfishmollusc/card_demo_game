@@ -19,7 +19,7 @@ func refresh_card(i):
 	
 	# 随机刷出新卡牌
 	var names = [\"学院\", \"渔港\", \"采石场\", \"银行\"]
-	var idx = Q.get_rng_generator().randi_range(0, len(names)-1)
+	var idx = randi() % len(names)
 	
 	var prefab = \"res://prefabs/cards/%s.tscn\" % names[idx]
 	var obj = load(prefab).instance()

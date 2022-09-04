@@ -8,7 +8,7 @@ script/source = "extends Building
 func _on_round_end(i):
 	var X = self.level
 	var Y = 1.0
-	match self.terrain:
+	match self.get_terrain():
 		Terrain.FLATLANDS: Y = 1.5;
 		Terrain.MOUNTAIN: Y = 0.5;
 		Terrain.OCEAN: Y = 0.0;

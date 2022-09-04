@@ -13,12 +13,16 @@ enum Terrain {
 	UNKNOWN		# 未知	
 }
 
-
 var progress = Vector2(0, 3)	# 进度/最大进度
 var level: int = 0				# 默认0级，建造完为1级
 var working_rounds: int = 0		# 已经工作的回合数
-var terrain = Terrain.UNKNOWN
+var _terrain = Terrain.UNKNOWN
 
+func get_terrain():
+	if _terrain == Terrain.UNKNOWN:
+		_terrain = Terrain.values()[randi() % Terrain.size()]
+	return _terrain
+	
 func is_completed() -> bool:
 	return progress.x >= progress.y
 
@@ -26,7 +30,6 @@ func _ready():
 	var turn_based = Q.get_turn_based()
 	turn_based.connect("round_started", self, "_on_round_start_internal")
 	turn_based.connect("round_ended", self, "_on_round_end_internal")
-	connect("input_event", self, "_on_building_input_event")
 
 func reset_progress():
 	progress.x = 0
@@ -60,9 +63,4 @@ func _on_deselect():
 	
 func get_description():
 	var info = name + " Lv. %d" % level + " Prog %d/%d" % [progress.x, progress.y]
-	return info
-
-func _on_building_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
-	if Q.is_tap_event(event):
-		var map = get_node("/root/0/world/map_background")
-		map.select_building(self)
+	return info + '\n' + Terrain.keys()[get_terrain()]

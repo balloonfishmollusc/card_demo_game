@@ -8,7 +8,7 @@ script/source = "extends \"res://scripts/libs/building.gd\"
 func _on_round_end(i):
 	var X = self.level
 	var Y = 1.0
-	match self.terrain:
+	match self.get_terrain():
 		Terrain.FLATLANDS: Y = 1.0;
 		Terrain.MOUNTAIN: Y = 2.0;
 		Terrain.OCEAN: Y = 0.0;
