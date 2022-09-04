@@ -9,12 +9,12 @@ func _on_round_end(i):
 	var X = self.level
 	var Y = 1.0
 	match self.get_terrain():
-		Terrain.FLATLANDS: Y = 1.5;
-		Terrain.MOUNTAIN: Y = 0.5;
-		Terrain.OCEAN: Y = 0.0;
-		Terrain.PORT: Y = 0.9;
-		Terrain.DESERT: Y = 0;
-	Q.get_p1().tech_points += X*Y*5
+		Q.Terrain.FLATLANDS: Y = 1.5;
+		Q.Terrain.MOUNTAIN: Y = 0.5;
+		Q.Terrain.OCEAN: Y = 0.0;
+		Q.Terrain.PORT: Y = 0.9;
+		Q.Terrain.DESERT: Y = 0;
+	Q.get_p1().add_tech_points(X*Y*5)
 "
 
 [node name="学院" instance=ExtResource( 1 )]

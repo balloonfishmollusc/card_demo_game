@@ -61,6 +61,8 @@ var cowries: int = 0
 var energy: int = 20
 var tech_points: int = 0
 
+signal on_tech_level_up(new_lv)
+
 # 科技等级对应的点数
 const tech_levels = [
 	0,
@@ -82,6 +84,15 @@ func get_tech_progress():
 		tech_points,
 		tech_levels[i+1]
 	)
+
+func add_tech_points(inc):
+	var prev_lv = get_tech_level()
+	self.tech_points += inc
+	var new_lv = get_tech_level()
+	assert(new_lv==prev_lv or new_lv-prev_lv==1)
+	if new_lv-prev_lv == 1:
+		emit_signal(\"on_tech_level_up\", new_lv)
+		
 
 func _on_p1_turn_ready(player) -> void:
 	pass
@@ -107,18 +118,22 @@ func _on_level_director_round_started(i) -> void:
 [sub_resource type="GDScript" id=35]
 script/source = "extends Panel
 
-var building: Building = null
+var g_data: Q.GridData = null
 
-func enable(b: Building):
-	self.building = b
+func enable(dt: Q.GridData):
+	self.g_data = dt
 	
 func disable():
-	self.building = null
+	self.g_data = null
 	
 func _process(delta: float) -> void:
-	self.visible = self.building != null
+	self.visible = self.g_data != null
 	if self.visible:
-		$Label.text = building.get_description()
+		var desc = []
+		if g_data.building != null:
+			desc.append( g_data.building.get_desc() )
+		desc.append( Q.Terrain.keys()[g_data.terrain] )
+		$Label.text = \"\\n\".join(desc)
 "
 
 [sub_resource type="DynamicFont" id=33]
@@ -609,37 +624,38 @@ script/source = "extends TileMap
 
 var _data = {}
 
+func _ready() -> void:
+	for i in range(-200, 200):
+		for j in range(-200, 200):
+			var dt = Q.GridData.new()
+			dt.terrain = Q.Terrain.values()[
+				randi() % Q.Terrain.size()
+			]
+			_data[Vector2(i, j)] = dt
+
 func place_building(obj: Node2D, grid_pos) -> bool:
 	obj.name = str(grid_pos) + \" \" + obj.name
-	if grid_pos in _data:
-		var b: Building = _data[grid_pos]
+	var dt: Q.GridData = _data[grid_pos]
+	if dt.building != null:
+		var b: Building = dt.building
 		if b.name == obj.name and b.is_completed():
-			b.reset_progress()
-			print(\"reset progress to level up\")
+			b.level += 1
 			return true
 		else:
 			print(\"cannot place building!!\")
 			return false
 	get_node(\"/root/0/world/buildings\").add_child(obj)
 	obj.position = map_to_world(grid_pos) + cell_size*0.5
-	_data[grid_pos] = obj
+	_data[grid_pos].building = obj
 	return true
-	
 
-var curr_building: Building setget select_building
-onready var ui = get_tree().root.get_node(\"0/world/ui\")
+onready var ui = Q.get_world_ui()
+var curr_grid: Q.GridData = null
 
-func select_building(building: Building):
-	print(\"selected!\")
-	deselect_building()
-	curr_building = building
-	ui.enable_selection_indicator(building.position)
-	curr_building._on_select()
-	
-func deselect_building():
-	if curr_building != null:
-		curr_building._on_deselect()
-		ui.disable_selection_indicator()
+func select_grid(grid_pos: Vector2):
+	ui.enable_selection_indicator(grid_pos)
+	curr_grid = _data[grid_pos]
+	Q.get_info_panel().enable(curr_grid)
 		
 var _moving_camera = false
 var _mouse_pos_last_frame: Vector2
@@ -664,12 +680,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		_last_tap_pos = event.position
 		
 		var grid_pos = world_to_map(Q.get_global_mouse_position())
-		if grid_pos in _data:
-			select_building(_data[grid_pos])
-		else:
-			deselect_building()
+		select_grid(grid_pos)
 
-		if curr_elpased_msecs < 300 and curr_mouse_motion.length() < 50:
+		if curr_elpased_msecs < 250 and curr_mouse_motion.length() < 32:
 			# double tap
 			if not _camera_2d.is_busy():
 				_camera_2d.toggle_zoom_mode()
@@ -681,8 +694,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		
 	if Q.is_tap_event(event, false):
 		_moving_camera = false
-		
-
 "
 
 [sub_resource type="TileSet" id=11]
@@ -730,13 +741,12 @@ script/source = "extends Node2D
 
 onready var grid = Q.get_world_map()
 
-func align2grid(world_pos: Vector2):
-	var map_pos = grid.world_to_map(world_pos)
-	return grid.map_to_world(map_pos) + grid.cell_size*0.5
+func _grid_w_center(grid_pos: Vector2):
+	return grid.map_to_world(grid_pos) + grid.cell_size*0.5
 	
-func enable_tile_indicator(world_pos: Vector2):
+func enable_tile_indicator(grid_pos: Vector2):
 	var item = $tile_indicator
-	item.position = align2grid(world_pos);
+	item.position = _grid_w_center(grid_pos);
 	item.visible = true;
 	
 func disable_tile_indicator():
@@ -744,9 +754,9 @@ func disable_tile_indicator():
 	item.visible = false;
 	return grid.world_to_map(item.position);
 	
-func enable_selection_indicator(world_pos: Vector2):
+func enable_selection_indicator(grid_pos: Vector2):
 	var item = $selection_indicator
-	item.position = align2grid(world_pos);
+	item.position = _grid_w_center(grid_pos)
 	item.visible = true;
 	
 func disable_selection_indicator():

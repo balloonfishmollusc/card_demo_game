@@ -21,5 +21,21 @@ func is_tap_event(event: InputEvent, pressed: bool=true):
 func get_global_mouse_position():
 	return get_camera_2d().get_global_mouse_position()
 	
-func get_world_map():
-	return get_node("/root/0/world/map")
+func get_world_map() -> TileMap:
+	return get_node("/root/0/world/map") as TileMap
+	
+func get_world_ui():
+	return get_node("/root/0/world/ui")
+
+
+enum Terrain {
+	FLATLANDS,	# 平原
+	MOUNTAIN,	# 山地
+	OCEAN,		# 海洋
+	PORT,		# 港口
+	DESERT,		# 沙漠	
+}
+
+class GridData:
+	var terrain
+	var building

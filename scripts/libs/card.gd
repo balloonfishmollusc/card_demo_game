@@ -55,9 +55,8 @@ func _process(delta: float) -> void:
 	set_global_position(get_global_mouse_position()-offset)
 
 	if _can_use():
-		ui.enable_tile_indicator(
-			Q.get_global_mouse_position()-offset*Q.get_camera_2d().zoom.x
-		)
+		var w_pos = Q.get_global_mouse_position()-offset*Q.get_camera_2d().zoom.x
+		ui.enable_tile_indicator(Q.get_world_map().world_to_map(w_pos))
 		self.modulate.a = 0.5
 	else:
 		self.modulate.a = 1.0

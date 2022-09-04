@@ -12,10 +12,6 @@ func _on_round_end(i):
 
 [node name="银行" instance=ExtResource( 1 )]
 script = SubResource( 1 )
-price = 150
-building_time = 5
-cost = 1
-description = "钱生钱，利生利。"
 
 [node name="Label" parent="ColorRect" index="0"]
 text = "银行"
