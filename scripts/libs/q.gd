@@ -1,7 +1,7 @@
 extends Node
 
-func get_p1():
-	return get_node("/root/0/globals/p1")
+func get_p1() -> Player:
+	return get_node("/root/0/globals/p1") as Player
 
 func get_camera_2d() -> Camera2D:
 	return get_node("/root/0/world/Camera2D") as Camera2D

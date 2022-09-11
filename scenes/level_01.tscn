@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=2]
+[gd_scene load_steps=46 format=2]
 
 [ext_resource path="res://prefabs/ui/card_slot.tscn" type="PackedScene" id=1]
 [ext_resource path="res://arts/ui/anims/sand_clock.png" type="Texture" id=2]
@@ -11,9 +11,11 @@
 [ext_resource path="res://arts/world/map.png" type="Texture" id=9]
 [ext_resource path="res://scripts/ui/dialog_panel.gd" type="Script" id=10]
 [ext_resource path="res://prefabs/_dialog_widget.tscn" type="PackedScene" id=11]
-[ext_resource path="res://arts/characters/pc.png" type="Texture" id=12]
+[ext_resource path="res://icon.jpg" type="Texture" id=12]
 [ext_resource path="res://arts/ui/indicators/tile_indicator.png" type="Texture" id=13]
 [ext_resource path="res://arts/world/map/tilemap.png" type="Texture" id=14]
+[ext_resource path="res://scripts/libs/tech.gd" type="Script" id=15]
+[ext_resource path="res://scripts/libs/player.gd" type="Script" id=16]
 
 [sub_resource type="GDScript" id=40]
 script/source = "extends Node2D
@@ -34,8 +36,8 @@ var texts = [
 func _ready() -> void:
 	if not enabled:
 		return
-	# var panel = $canvas/dialog_panel
-	# panel.play(texts)
+	var panel = $canvas/dialog_panel
+	panel.play(texts)
 "
 
 [sub_resource type="GDScript" id=24]
@@ -51,54 +53,6 @@ func _on_round_end():
 	sand_clock.play_anim()
 	yield(sand_clock, \"animation_finished\")
 	emit_signal(\"round_ended\", r_index)
-"
-
-[sub_resource type="GDScript" id=2]
-script/source = "extends TurnBasedPlayer
-
-# Resources
-var cowries: int = 0
-var energy: int = 20
-var tech_points: int = 0
-
-signal on_tech_level_up(new_lv)
-
-# 科技等级对应的点数
-const tech_levels = [
-	0,
-	10,25,50,100,200,400,650,1000,1500,2000,
-	9999
-]
-
-func get_tech_level() -> int:
-	var i = -1
-	for lv in tech_levels:
-		if self.tech_points >= lv:
-			i += 1
-	return i
-
-func get_tech_progress():
-	var i = get_tech_level()
-	return Vector3(
-		tech_levels[i],
-		tech_points,
-		tech_levels[i+1]
-	)
-
-func add_tech_points(inc):
-	var prev_lv = get_tech_level()
-	self.tech_points += inc
-	var new_lv = get_tech_level()
-	assert(new_lv==prev_lv or new_lv-prev_lv==1)
-	if new_lv-prev_lv == 1:
-		emit_signal(\"on_tech_level_up\", new_lv)
-		
-
-func _on_p1_turn_ready(player) -> void:
-	pass
-
-func _on_p1_turn_submitted(player) -> void:
-	pass
 "
 
 [sub_resource type="DynamicFont" id=1]
@@ -775,6 +729,7 @@ width = 512
 
 [node name="0" type="Node2D"]
 script = SubResource( 40 )
+enabled = false
 
 [node name="globals" type="Node" parent="."]
 
@@ -783,7 +738,10 @@ script = SubResource( 24 )
 players = [ NodePath("../p1") ]
 
 [node name="p1" type="Node" parent="globals"]
-script = SubResource( 2 )
+script = ExtResource( 16 )
+
+[node name="tech_sys" type="Node" parent="globals"]
+script = ExtResource( 15 )
 
 [node name="canvas" type="CanvasLayer" parent="."]
 
