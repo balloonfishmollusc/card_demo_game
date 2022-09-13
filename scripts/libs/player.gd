@@ -71,9 +71,9 @@ func get_tech_level() -> int:
 func get_tech_progress():
 	var i = get_tech_level()
 	return Vector3(
-		tech_levels.keys()[i],
+		tech_levels.keys()[i-1] if i>=1 else 0,
 		tech_points,
-		tech_levels.keys()[i+1]
+		tech_levels.keys()[i]
 	)
 
 func add_tech_points(inc):

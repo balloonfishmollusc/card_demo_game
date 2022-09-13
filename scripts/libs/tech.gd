@@ -1,3 +1,5 @@
+extends Node
+
 class_name Tech
 
 func _on_p1_tech_level_up(new_lv) -> void:
@@ -6,10 +8,16 @@ func _on_p1_tech_level_up(new_lv) -> void:
 var tech_stack = []
 
 class _Tech:
+	func _get_name() -> String:
+		return get_class()
+		
+	func _get_desc() -> String:
+		return "None"
+	
 	func _apply():
 		pass
 	
-	func get_pl() -> Player:
+	func get_pl():
 		return Q.get_p1()
 	
 	func _upgradable() -> bool:

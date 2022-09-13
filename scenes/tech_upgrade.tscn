@@ -1,0 +1,71 @@
+[gd_scene load_steps=6 format=2]
+
+[ext_resource path="res://icon.jpg" type="Texture" id=1]
+[ext_resource path="res://arts/fonts/MFYueYuan_Noncommercial-Regular.tres" type="DynamicFontData" id=2]
+
+[sub_resource type="Theme" id=1]
+
+[sub_resource type="DynamicFont" id=2]
+size = 32
+font_data = ExtResource( 2 )
+
+[sub_resource type="Theme" id=3]
+default_font = SubResource( 2 )
+
+[node name="tech_upgrade" type="ColorRect"]
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+margin_left = 200.0
+margin_top = -543.0
+margin_right = -200.0
+margin_bottom = 163.0
+color = Color( 1, 1, 1, 0.494118 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Button" type="Button" parent="VBoxContainer"]
+margin_right = 680.0
+margin_bottom = 200.0
+rect_min_size = Vector2( 0, 200 )
+theme = SubResource( 1 )
+
+[node name="icon" type="TextureRect" parent="VBoxContainer/Button"]
+margin_left = 38.0
+margin_top = 25.0
+margin_right = 185.0
+margin_bottom = 170.0
+mouse_filter = 2
+texture = ExtResource( 1 )
+expand = true
+stretch_mode = 1
+
+[node name="title" type="Label" parent="VBoxContainer/Button"]
+margin_left = 221.0
+margin_top = 25.0
+margin_right = 597.0
+margin_bottom = 87.0
+theme = SubResource( 3 )
+text = "标题"
+
+[node name="desc" type="RichTextLabel" parent="VBoxContainer/Button"]
+margin_left = 221.0
+margin_top = 87.0
+margin_right = 640.0
+margin_bottom = 174.0
+mouse_filter = 2
+text = "123456"
+
+[node name="Button2" type="Button" parent="VBoxContainer"]
+margin_top = 204.0
+margin_right = 680.0
+margin_bottom = 404.0
+rect_min_size = Vector2( 0, 200 )
+
+[node name="Button3" type="Button" parent="VBoxContainer"]
+margin_top = 408.0
+margin_right = 680.0
+margin_bottom = 608.0
+rect_min_size = Vector2( 0, 200 )
