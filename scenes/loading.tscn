@@ -2,7 +2,7 @@
 
 [ext_resource path="res://resources/themes/monologue.theme" type="Theme" id=1]
 [ext_resource path="res://arts/world/map.png" type="Texture" id=2]
-[ext_resource path="res://arts/fonts/MFYueYuan_Noncommercial-Regular.tres" type="DynamicFontData" id=3]
+[ext_resource path="res://arts/fonts/main_font.tres" type="DynamicFontData" id=3]
 
 [sub_resource type="StyleBoxFlat" id=1]
 bg_color = Color( 0, 0, 0, 1 )

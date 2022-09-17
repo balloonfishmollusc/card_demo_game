@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=2]
 
-[ext_resource path="res://arts/fonts/MFYueYuan_Noncommercial-Regular.tres" type="DynamicFontData" id=1]
+[ext_resource path="res://arts/fonts/main_font.tres" type="DynamicFontData" id=1]
 
 [sub_resource type="GDScript" id=1]
 script/source = "extends ColorRect

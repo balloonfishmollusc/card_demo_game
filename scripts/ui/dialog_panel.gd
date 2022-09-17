@@ -4,7 +4,7 @@ class_name DialogPanel
 onready var text_box = $text_box
 onready var avatar = $avatar
 
-const TYPEWRITER_SPEED = 16
+const TYPEWRITER_SPEED = 24
 
 signal any_clicked()
 

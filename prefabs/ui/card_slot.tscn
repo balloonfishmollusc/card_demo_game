@@ -33,19 +33,17 @@ anchor_right = 0.5
 anchor_bottom = 0.5
 margin_left = -540.0
 margin_top = -1080.0
-margin_right = -340.0
-margin_bottom = -840.0
-rect_min_size = Vector2( 240, 300 )
+margin_right = -330.0
+margin_bottom = -870.0
+rect_min_size = Vector2( 210, 210 )
 color = Color( 0.0941176, 0.270588, 0.321569, 1 )
 script = SubResource( 1 )
 
 [node name="lock" type="Button" parent="."]
-anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_left = -92.0
-margin_top = -44.0
+margin_bottom = 42.0
 toggle_mode = true
 shortcut_in_tooltip = false
 text = "LOCK"

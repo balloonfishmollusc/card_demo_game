@@ -19,7 +19,7 @@ func _ready() -> void:
 		"price": self.price,
 		"cost": self.cost,
 		"time": self.time
-	}, "  ")
+	}, " ")
 
 func _on_card_button_down() -> void:
 	start_pos = self.rect_global_position
