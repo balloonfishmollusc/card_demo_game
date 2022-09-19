@@ -16,7 +16,13 @@ func refresh_card():
 		get_child(0).delete()
 	
 	# 随机刷出新卡牌
-	var names = [\"学院\", \"渔港\", \"采石场\", \"银行\"]
+	var names = [
+		\"builder/学院\",
+		\"builder/渔港\",
+		\"builder/采石场\",
+		\"builder/银行\",
+		\"skill/探索\"
+	]
 	var idx = randi() % len(names)
 	
 	var prefab = \"res://prefabs/cards/%s.tscn\" % names[idx]

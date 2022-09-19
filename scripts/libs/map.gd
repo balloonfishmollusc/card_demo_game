@@ -80,7 +80,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		if grid_pos in _data:
 			select_grid(grid_pos)
 			return
-		deselect_grid()
+		# deselect_grid()
 		
 		if curr_elpased_msecs < 250 and curr_mouse_motion.length() < 32:
 			# double tap

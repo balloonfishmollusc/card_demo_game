@@ -10,16 +10,18 @@ var on_drag: bool = false
 var start_pos: Vector2
 onready var ui = get_tree().root.get_node("0/world/ui")
 
+func _get_json_desc() -> Dictionary:
+	return {
+		"name": self.name,
+		"price": self.price,
+		"cost": self.cost
+	}
+
 func _ready() -> void:
 	connect("button_down", self, "_on_card_button_down")
 	connect("button_up", self, "_on_card_button_up")
 	
-	$data_label.text = JSON.print({
-		"name": self.name,
-		"price": self.price,
-		"cost": self.cost,
-		"time": self.time
-	}, " ")
+	$data_label.text = JSON.print(_get_json_desc(), " ")
 
 func _on_card_button_down() -> void:
 	start_pos = self.rect_global_position

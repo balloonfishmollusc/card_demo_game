@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://prefabs/cards/base/skill_card.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Card
+
+func _on_invoke(grid_pos):
+	return true
+"
+
+[node name="探索" instance=ExtResource( 1 )]
+script = SubResource( 1 )
+price = 150
+cost = 3
