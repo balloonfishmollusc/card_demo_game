@@ -5,13 +5,21 @@ var _data = {}
 onready var _data_node = get_node("/root/0/world/_data")
 
 func _ready() -> void:
-	for v in [Vector2(4,10), Vector2(6,11)]:
-		place_res_point(v)
+	for _i in range(4):
+		place_random_res_point()
+		
+func place_random_res_point():
+	var grid_pos = $valid_area.random_pos()
+	if grid_pos in _data:
+		return
+	var terrain = Q.Terrain.keys()[randi() % Q.Terrain.size()]
+	var res_num = randi() % 90 + 10
+	place_res_point(grid_pos, terrain, res_num)
 
-func place_res_point(grid_pos) -> void:
+func place_res_point(grid_pos, terrain, res_num) -> void:
 	assert(not (grid_pos in _data))
 	var node = _make_grid_node(grid_pos)
-	node.place_res_point(Q.Terrain.FLATLANDS, 100)
+	node.place_res_point(terrain, res_num)
 
 func _make_grid_node(grid_pos):
 	if grid_pos in _data:

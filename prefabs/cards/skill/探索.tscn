@@ -6,6 +6,7 @@
 script/source = "extends Card
 
 func _on_invoke(grid_pos):
+	Q.get_world_map().place_random_res_point()
 	return true
 "
 

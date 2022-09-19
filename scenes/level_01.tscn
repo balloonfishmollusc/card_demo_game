@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=2]
+[gd_scene load_steps=44 format=2]
 
 [ext_resource path="res://prefabs/ui/card_slot.tscn" type="PackedScene" id=1]
 [ext_resource path="res://arts/ui/anims/sand_clock.png" type="Texture" id=2]
@@ -199,6 +199,26 @@ func play_anim():
 	yield(get_tree().create_timer(0.32*0.5), \"timeout\")
 	visible = false
 	emit_signal(\"animation_finished\")
+"
+
+[sub_resource type="GDScript" id=50]
+script/source = "extends ColorRect
+
+var min_pos: Vector2
+var max_pos: Vector2
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	min_pos = rect_position
+	max_pos = min_pos + rect_size
+	min_pos = Q.get_world_map().world_to_map(min_pos)
+	max_pos = Q.get_world_map().world_to_map(max_pos)
+
+func random_pos() -> Vector2:
+	randomize()
+	var x = rand_range(min_pos.x, max_pos.x)
+	var y = rand_range(min_pos.y, max_pos.y)
+	return Vector2(int(x), int(y))
 "
 
 [sub_resource type="TileSet" id=11]
@@ -571,7 +591,7 @@ __meta__ = {
 
 [node name="map_background" type="Sprite" parent="world"]
 self_modulate = Color( 0.717647, 0.717647, 0.717647, 1 )
-position = Vector2( 1048, 1379 )
+position = Vector2( 897, 1052 )
 scale = Vector2( 2.44455, 2.44455 )
 texture = ExtResource( 9 )
 
@@ -582,6 +602,15 @@ script = ExtResource( 5 )
 __meta__ = {
 "_edit_lock_": true
 }
+
+[node name="valid_area" type="ColorRect" parent="world/map"]
+margin_left = 41.0
+margin_top = 444.0
+margin_right = 1040.0
+margin_bottom = 1699.0
+mouse_filter = 2
+color = Color( 1, 1, 1, 0 )
+script = SubResource( 50 )
 
 [node name="grid" type="TileMap" parent="world"]
 modulate = Color( 1, 1, 1, 0.376471 )
@@ -596,6 +625,11 @@ __meta__ = {
 [node name="Camera2D" type="Camera2D" parent="world"]
 position = Vector2( 540, 1080 )
 current = true
+limit_left = -1425
+limit_top = -293
+limit_right = 3219
+limit_bottom = 2397
+limit_smoothed = true
 smoothing_enabled = true
 smoothing_speed = 8.0
 script = SubResource( 31 )
