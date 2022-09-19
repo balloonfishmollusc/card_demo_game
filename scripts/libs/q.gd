@@ -21,8 +21,8 @@ func is_tap_event(event: InputEvent, pressed: bool=true):
 func get_global_mouse_position():
 	return get_camera_2d().get_global_mouse_position()
 	
-func get_world_map() -> WorldMap:
-	return get_node("/root/0/world/map") as WorldMap
+func get_world_map() -> TileMap:
+	return get_node("/root/0/world/map") as TileMap
 	
 func get_world_ui():
 	return get_node("/root/0/world/ui")
@@ -35,10 +35,3 @@ enum Terrain {
 	PORT,		# 港口
 	RELIC,		# 遗迹
 }
-
-class GridData:
-	var terrain
-	var building
-	var pos: Vector2
-	var res_type	# "C", "B", "A", "S" decided by init res_num
-	var res_num		# 0 for none, 40 for normal, 100 for high

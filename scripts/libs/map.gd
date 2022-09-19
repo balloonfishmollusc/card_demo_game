@@ -1,19 +1,35 @@
 extends TileMap
-
 class_name WorldMap
 
 var _data = {}
+onready var _data_node = get_node("/root/0/world/_data")
 
 func _ready() -> void:
-	pass
+	for v in [Vector2(4,10), Vector2(6,11)]:
+		place_res_point(v)
+
+func place_res_point(grid_pos) -> void:
+	assert(not (grid_pos in _data))
+	var node = _make_grid_node(grid_pos)
+	node.place_res_point(Q.Terrain.FLATLANDS, 100)
+
+func _make_grid_node(grid_pos):
+	if grid_pos in _data:
+		return
+	var node = GridNode.new(grid_pos)
+	_data[grid_pos] = node
+	_data_node.add_child(node)
+	return node
+
+func local2world(grid_pos):
+	return map_to_world(grid_pos) + cell_size*0.5
 
 func place_building(obj: Node2D, grid_pos) -> bool:
 	if not (grid_pos in _data):
 		return false
-	obj.name = str(grid_pos) + " " + obj.name
-	var dt: Q.GridData = _data[grid_pos]
-	if dt.building != null:
-		var b: Building = dt.building
+	var node = _data[grid_pos]
+	if node.building != null:
+		var b: Building = node.building
 		if b.name == obj.name and b.is_completed():
 			b.level += 1
 			select_grid(grid_pos)
@@ -21,21 +37,22 @@ func place_building(obj: Node2D, grid_pos) -> bool:
 		else:
 			print("cannot place building!!")
 			return false
-	get_node("/root/0/world/_data").add_child(obj)
-	obj.position = map_to_world(grid_pos) + cell_size*0.5
-	_data[grid_pos].building = obj
+	node.building = obj
 	select_grid(grid_pos)
 	return true
 
 onready var ui = Q.get_world_ui()
-var curr_grid: Q.GridData = null
+var curr_grid: GridNode = null
 
 func select_grid(grid_pos: Vector2):
-	if not (grid_pos in _data):
-		return
 	ui.enable_selection_indicator(grid_pos)
 	curr_grid = _data[grid_pos]
 	Q.get_info_panel().enable(curr_grid)
+	
+func deselect_grid():
+	ui.disable_selection_indicator()
+	curr_grid = null
+	Q.get_info_panel().disable()
 		
 var _moving_camera = false
 var _mouse_pos_last_frame: Vector2
@@ -60,8 +77,11 @@ func _unhandled_input(event: InputEvent) -> void:
 		_last_tap_pos = event.position
 		
 		var grid_pos = world_to_map(Q.get_global_mouse_position())
-		select_grid(grid_pos)
-
+		if grid_pos in _data:
+			select_grid(grid_pos)
+			return
+		deselect_grid()
+		
 		if curr_elpased_msecs < 250 and curr_mouse_motion.length() < 32:
 			# double tap
 			if not _camera_2d.is_busy():

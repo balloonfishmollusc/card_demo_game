@@ -69,21 +69,27 @@ func _on_level_director_round_started(i) -> void:
 [sub_resource type="GDScript" id=35]
 script/source = "extends Panel
 
-var g_data: Q.GridData = null
+var g_node: GridNode = null
 
-func enable(dt: Q.GridData):
-	self.g_data = dt
+func enable(node):
+	self.g_node = node
 	
 func disable():
-	self.g_data = null
+	self.g_node = null
 	
 func _process(delta: float) -> void:
-	self.visible = self.g_data != null
+	self.visible = g_node != null
 	if self.visible:
 		var desc = []
-		if g_data.building != null:
-			desc.append( g_data.building.get_desc() )
-		desc.append( Q.Terrain.keys()[g_data.terrain] )
+		if g_node.building != null:
+			desc.append( g_node.building.get_desc() )
+		desc.append(
+			\"%s / %s / %s\" % [
+				Q.Terrain.keys()[g_node.terrain],
+				g_node.res_level,
+				g_node.res_num
+			]
+		)
 		$Label.text = \"\\n\".join(desc)
 "
 
