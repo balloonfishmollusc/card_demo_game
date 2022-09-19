@@ -4,6 +4,8 @@ class_name Building
 signal completed()
 signal progress_changed(value)
 
+const BASE_COEF = 0.5
+
 var progress = Vector2(0, 3)	# 进度/最大进度
 var level: int = 0				# 默认0级，建造完为1级
 var working_rounds: int = 0		# 已经工作的回合数

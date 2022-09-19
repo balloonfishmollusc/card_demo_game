@@ -48,6 +48,11 @@ _global_script_classes=[ {
 "class": "TurnBasedPlayer",
 "language": "GDScript",
 "path": "res://scripts/engine/turn_based_player.gd"
+}, {
+"base": "TileMap",
+"class": "WorldMap",
+"language": "GDScript",
+"path": "res://scripts/libs/map.gd"
 } ]
 _global_script_class_icons={
 "Building": "",
@@ -57,7 +62,8 @@ _global_script_class_icons={
 "ResLabel": "",
 "Tech": "",
 "TurnBasedDirector": "",
-"TurnBasedPlayer": ""
+"TurnBasedPlayer": "",
+"WorldMap": ""
 }
 
 [application]

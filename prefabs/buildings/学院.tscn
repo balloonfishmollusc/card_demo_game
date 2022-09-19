@@ -9,12 +9,10 @@ func curr_value():
 	var X = self.level
 	var Y = 1.0
 	match self.get_terrain():
-		Q.Terrain.FLATLANDS: Y = 1.5;
-		Q.Terrain.MOUNTAIN: Y = 0.5;
-		Q.Terrain.OCEAN: Y = 0.0;
-		Q.Terrain.PORT: Y = 0.9;
-		Q.Terrain.DESERT: Y = 0;
-	return X*Y*5
+		Q.Terrain.MOUNTAIN: Y -= BASE_COEF
+		Q.Terrain.OCEAN: Y -= BASE_COEF
+		Q.Terrain.RELIC: Y += BASE_COEF
+	return int(X*Y*5)
 
 func _on_round_end(i):
 	Q.get_p1().add_tech_points(curr_value())

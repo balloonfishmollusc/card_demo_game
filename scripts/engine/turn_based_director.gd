@@ -7,6 +7,8 @@ signal round_ended(i)
 
 signal pre_round_started(i)
 signal pre_round_ended(i)
+signal game_started()
+signal game_ended()
 
 export var players: Array = []
 var p_index: int = 0
@@ -28,6 +30,7 @@ func play():
 	r_index = 0;
 	p_index = 0;
 
+	emit_signal("game_started")
 	while not _is_game_end():
 		r_index += 1;
 		emit_signal("pre_round_started", r_index)
@@ -39,6 +42,7 @@ func play():
 			yield(p, "turn_submitted")
 		emit_signal("pre_round_ended", r_index)
 		yield(_on_round_end(), "completed")
+	emit_signal("game_ended")
 
 func _on_round_start():
 	yield(get_tree(), "idle_frame")
