@@ -1,4 +1,4 @@
-[gd_scene load_steps=42 format=2]
+[gd_scene load_steps=43 format=2]
 
 [ext_resource path="res://prefabs/ui/card_slot.tscn" type="PackedScene" id=1]
 [ext_resource path="res://arts/ui/anims/sand_clock.png" type="Texture" id=2]
@@ -99,6 +99,16 @@ font_data = ExtResource( 4 )
 
 [sub_resource type="Theme" id=34]
 default_font = SubResource( 33 )
+
+[sub_resource type="GDScript" id=49]
+script/source = "extends HBoxContainer
+
+func _on_p1_turn_ready(player) -> void:
+	for slot in self.get_children():
+		if slot.active and not slot.has_card():
+			slot.refresh_card()
+			return
+"
 
 [sub_resource type="GDScript" id=29]
 script/source = "extends Button
@@ -332,6 +342,7 @@ margin_bottom = -190.0
 mouse_filter = 2
 custom_constants/separation = 2
 alignment = 2
+script = SubResource( 49 )
 
 [node name="card_slot" parent="canvas/cards/HBoxContainer" instance=ExtResource( 1 )]
 anchor_left = 0.0
@@ -342,6 +353,7 @@ margin_left = 22.0
 margin_top = 0.0
 margin_right = 232.0
 margin_bottom = 210.0
+active = false
 
 [node name="card_slot2" parent="canvas/cards/HBoxContainer" instance=ExtResource( 1 )]
 anchor_left = 0.0
@@ -627,6 +639,7 @@ __meta__ = {
 
 [connection signal="round_started" from="globals/turn_based" to="canvas/top_panel/round_label" method="_on_level_director_round_started"]
 [connection signal="turn_ready" from="globals/p1" to="globals/p1" method="_on_p1_turn_ready"]
+[connection signal="turn_ready" from="globals/p1" to="canvas/cards/HBoxContainer" method="_on_p1_turn_ready"]
 [connection signal="turn_submitted" from="globals/p1" to="globals/p1" method="_on_p1_turn_submitted"]
 [connection signal="pressed" from="canvas/bottom_panel/submit" to="canvas/bottom_panel/submit" method="_on_submit_pressed"]
 [connection signal="dismissed" from="canvas/dialog_panel/_dialog_widget" to="canvas/dialog_panel" method="_on_any_click"]

@@ -3,16 +3,23 @@
 [sub_resource type="GDScript" id=1]
 script/source = "extends Control
 
+export var active = true
+
 func _ready() -> void:
 	var turn_based = Q.get_turn_based()
 	turn_based.connect(\"game_started\", self, \"on_game_started\")
+	self.modulate.a = 1.0 if active else 0.5
 	
 func on_game_started():
-	refresh_card()
-	
+	if active:
+		refresh_card()
+
+func has_card() -> bool:
+	return get_child_count() > 0
+
 func refresh_card():
 	# 清除原有卡牌
-	if get_child_count() > 0:
+	if has_card():
 		get_child(0).delete()
 	
 	# 随机刷出新卡牌
