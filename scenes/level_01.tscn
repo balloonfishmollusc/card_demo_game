@@ -215,7 +215,6 @@ func _ready() -> void:
 	max_pos = Q.get_world_map().world_to_map(max_pos)
 
 func random_pos() -> Vector2:
-	randomize()
 	var x = rand_range(min_pos.x, max_pos.x)
 	var y = rand_range(min_pos.y, max_pos.y)
 	return Vector2(int(x), int(y))

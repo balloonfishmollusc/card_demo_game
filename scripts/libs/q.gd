@@ -1,5 +1,8 @@
 extends Node
 
+func _ready() -> void:
+	randomize()
+
 func get_p1() -> Player:
 	return get_node("/root/0/globals/p1") as Player
 
