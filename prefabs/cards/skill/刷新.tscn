@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://prefabs/cards/base/skill_card.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Card
+
+func _on_invoke(grid_pos):
+	var root = get_node(\"/root/0/canvas/cards/HBoxContainer\")
+	for slot in root.get_children():
+		if slot.active:
+			slot.refresh_card()
+	return true
+"
+
+[node name="刷新" instance=ExtResource( 1 )]
+script = SubResource( 1 )
+price = 250
+cost = 4

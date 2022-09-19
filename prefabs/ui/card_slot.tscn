@@ -28,7 +28,8 @@ func refresh_card():
 		\"builder/渔港\",
 		\"builder/采石场\",
 		\"builder/银行\",
-		\"skill/探索\"
+		\"skill/探索\",
+		\"skill/刷新\"
 	]
 	var idx = randi() % len(names)
 	
