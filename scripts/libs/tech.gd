@@ -87,7 +87,7 @@ class AdvancedBuildings extends _Tech:
 	func _apply():
 		pass
 		
-class AdvancedSpells extends _Tech:
+class AdvancedSkills extends _Tech:
 	func _get_name():
 		return "解锁高级卡牌"
 	

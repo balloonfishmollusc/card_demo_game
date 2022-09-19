@@ -35,7 +35,7 @@ var tech_levels = {
 	],
 	200: [
 		Tech.AdvancedBuildings.new(),
-		Tech.AdvancedSpells.new(),
+		Tech.AdvancedSkills.new(),
 	],
 	400: [
 		Tech.InstituteExtraPoints.new(),
