@@ -15,7 +15,7 @@ func get_grid_pos() -> Vector2:
 	return map.world_to_map(self.position)
 
 func get_terrain():
-	return map._data[get_grid_pos()].terrain
+	return get_parent().terrain
 	
 func is_completed() -> bool:
 	return progress.x >= progress.y

@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=2]
+[gd_scene load_steps=46 format=2]
 
 [ext_resource path="res://prefabs/ui/card_slot.tscn" type="PackedScene" id=1]
 [ext_resource path="res://arts/ui/anims/sand_clock.png" type="Texture" id=2]
@@ -13,6 +13,7 @@
 [ext_resource path="res://prefabs/_dialog_widget.tscn" type="PackedScene" id=11]
 [ext_resource path="res://arts/characters/1.jpg" type="Texture" id=12]
 [ext_resource path="res://arts/ui/indicators/tile_indicator.png" type="Texture" id=13]
+[ext_resource path="res://prefabs/res_point.tscn" type="PackedScene" id=14]
 [ext_resource path="res://scripts/libs/tech.gd" type="Script" id=15]
 [ext_resource path="res://scripts/libs/player.gd" type="Script" id=16]
 [ext_resource path="res://scenes/tech_upgrade.tscn" type="PackedScene" id=17]
@@ -69,7 +70,7 @@ func _on_level_director_round_started(i) -> void:
 [sub_resource type="GDScript" id=35]
 script/source = "extends Panel
 
-var g_node: GridNode = null
+var g_node: ResNode = null
 
 func enable(node):
 	self.g_node = node
@@ -200,6 +201,8 @@ func play_anim():
 	visible = false
 	emit_signal(\"animation_finished\")
 "
+
+[sub_resource type="TileSet" id=51]
 
 [sub_resource type="GDScript" id=50]
 script/source = "extends ColorRect
@@ -595,6 +598,7 @@ scale = Vector2( 2.44455, 2.44455 )
 texture = ExtResource( 9 )
 
 [node name="map" type="TileMap" parent="world"]
+tile_set = SubResource( 51 )
 cell_size = Vector2( 128, 128 )
 format = 1
 script = ExtResource( 5 )
@@ -603,6 +607,7 @@ __meta__ = {
 }
 
 [node name="valid_area" type="ColorRect" parent="world/map"]
+visible = false
 margin_left = 41.0
 margin_top = 444.0
 margin_right = 1040.0
@@ -636,9 +641,23 @@ script = SubResource( 31 )
 [node name="Tween" type="Tween" parent="world/Camera2D"]
 
 [node name="_data" type="Node2D" parent="world"]
-__meta__ = {
-"_edit_lock_": true
-}
+
+[node name="ResPoint" parent="world/_data" instance=ExtResource( 14 )]
+position = Vector2( 816, 1208 )
+terrain = 3
+visible_on_ready = true
+
+[node name="ResPoint2" parent="world/_data" instance=ExtResource( 14 )]
+position = Vector2( 432, 1072 )
+visible_on_ready = true
+
+[node name="ResPoint3" parent="world/_data" instance=ExtResource( 14 )]
+position = Vector2( 568, 688 )
+terrain = 2
+
+[node name="ResPoint4" parent="world/_data" instance=ExtResource( 14 )]
+position = Vector2( 312, 688 )
+terrain = 2
 
 [node name="ui" type="Node2D" parent="world"]
 script = SubResource( 19 )

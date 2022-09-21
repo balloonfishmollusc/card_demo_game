@@ -1,41 +1,30 @@
 extends TileMap
 class_name WorldMap
 
-var _data = {}
 onready var _data_node = get_node("/root/0/world/_data")
 
-func _ready() -> void:
-	for _i in range(4):
-		place_random_res_point()
-		
-func place_random_res_point():
-	var grid_pos = $valid_area.random_pos()
-	if grid_pos in _data:
-		return
-	var terrain = Q.Terrain.keys()[randi() % Q.Terrain.size()]
-	var res_num = randi() % 90 + 10
-	place_res_point(grid_pos, terrain, res_num)
-
-func place_res_point(grid_pos, terrain, res_num) -> void:
-	assert(not (grid_pos in _data))
-	var node = _make_grid_node(grid_pos)
-	node.place_res_point(terrain, res_num)
-
-func _make_grid_node(grid_pos):
-	if grid_pos in _data:
-		return
-	var node = GridNode.new(grid_pos)
-	_data[grid_pos] = node
-	_data_node.add_child(node)
-	return node
+func get_res_node(grid_pos) -> ResNode:
+	for c in _data_node.get_children():
+		if c.name == str(grid_pos) and c.visible:
+			return c
+	return null
+	
+func enable_random_res_node():
+	var children: Array = _data_node.get_children()
+	children.shuffle()
+	for c in children:
+		if not c.visible:
+			c.visible = true
+			return
+	print("所有节点都已探索完毕")
 
 func local2world(grid_pos):
 	return map_to_world(grid_pos) + cell_size*0.5
 
 func place_building(obj: Node2D, grid_pos) -> bool:
-	if not (grid_pos in _data):
+	var node = get_res_node(grid_pos)
+	if node == null:
 		return false
-	var node = _data[grid_pos]
 	if node.building != null:
 		var b: Building = node.building
 		if b.name == obj.name and b.is_completed():
@@ -50,16 +39,17 @@ func place_building(obj: Node2D, grid_pos) -> bool:
 	return true
 
 onready var ui = Q.get_world_ui()
-var curr_grid: GridNode = null
+var curr_node: ResNode = null
 
 func select_grid(grid_pos: Vector2):
 	ui.enable_selection_indicator(grid_pos)
-	curr_grid = _data[grid_pos]
-	Q.get_info_panel().enable(curr_grid)
+	curr_node = get_res_node(grid_pos)
+	assert(curr_node != null)
+	Q.get_info_panel().enable(curr_node)
 	
 func deselect_grid():
 	ui.disable_selection_indicator()
-	curr_grid = null
+	curr_node = null
 	Q.get_info_panel().disable()
 		
 var _moving_camera = false
@@ -85,7 +75,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		_last_tap_pos = event.position
 		
 		var grid_pos = world_to_map(Q.get_global_mouse_position())
-		if grid_pos in _data:
+		if get_res_node(grid_pos) != null:
 			select_grid(grid_pos)
 			return
 		# deselect_grid()
