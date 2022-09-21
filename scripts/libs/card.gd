@@ -26,6 +26,9 @@ func _ready() -> void:
 func _on_card_button_down() -> void:
 	start_pos = self.rect_global_position
 
+func has_enough_res() -> bool:
+	return Q.get_p1().cowries >= price and Q.get_p1().energy >= cost
+
 func _on_card_button_up() -> void:
 	if not on_drag:
 		return
@@ -65,4 +68,7 @@ func _process(delta: float) -> void:
 		ui.disable_tile_indicator()
 
 func get_drag_data(position: Vector2):
-	on_drag = true
+	if has_enough_res():
+		on_drag = true
+	else:
+		print("贝壳或体力不足")

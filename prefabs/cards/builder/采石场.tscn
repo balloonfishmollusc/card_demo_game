@@ -4,7 +4,6 @@
 
 [node name="采石场" instance=ExtResource( 1 )]
 price = 190
-cost = 3
 description = "高风险，高回报。取之有尽，用之易竭。"
 time = 6
 

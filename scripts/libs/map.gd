@@ -29,6 +29,7 @@ func place_building(obj: Node2D, grid_pos) -> bool:
 		var b: Building = node.building
 		if b.name == obj.name and b.is_completed():
 			b.level += 1
+			b.progress.x = 0
 			select_grid(grid_pos)
 			return true
 		else:

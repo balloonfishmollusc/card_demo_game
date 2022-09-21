@@ -10,7 +10,7 @@ var tech_points: int = 0
 # Properties
 var building_extra_income: float = 0.0
 var building_time_reduction: int = 0
-var energy_recharge: int = 5
+var energy_recharge: int = 2
 var institute_extra_points: int = 0
 
 signal level_up(new_lv, options)
@@ -86,6 +86,7 @@ func add_tech_points(inc):
 		emit_signal("level_up", new_lv, options)
 
 func _on_p1_turn_ready(player) -> void:
+	# self.energy = int(min(20, self.energy+1))
 	pass
 
 func _on_p1_turn_submitted(player) -> void:

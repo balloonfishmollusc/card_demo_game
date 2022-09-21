@@ -34,13 +34,16 @@ func add_progress(inc: int):
 		emit_signal("completed")
 	
 func _on_round_start_internal(i):
-	if not is_completed():
-		add_progress(1)
+	pass
 
 func _on_round_end_internal(i):
 	if is_completed():
 		_on_round_end(i)
 		working_rounds += 1
+	else:
+		if Q.get_p1().energy >= 1:
+			Q.get_p1().energy -= 1
+			add_progress(1)
 
 func _on_round_end(i):
 	pass

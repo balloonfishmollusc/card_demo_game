@@ -92,12 +92,12 @@ gdscript/warnings/return_value_discarded=false
 window/size/width=1080
 window/size/height=2160
 window/size/always_on_top=true
-window/size/test_width=480
-window/size/test_height=960
+window/size/test_width=400
+window/size/test_height=800
 window/dpi/allow_hidpi=true
 window/handheld/orientation="portrait"
 window/stretch/mode="2d"
-window/stretch/aspect="expand"
+window/stretch/aspect="keep_width"
 
 [editor_plugins]
 
