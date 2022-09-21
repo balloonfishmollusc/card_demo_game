@@ -3,8 +3,8 @@ extends TurnBasedPlayer
 class_name Player
 
 # Resources
-var cowries: int = 500
-var energy: int = 20
+var cowries: int = 1000
+var energy: int = 50
 var tech_points: int = 0
 
 # Properties
