@@ -12,7 +12,7 @@ func curr_value():
 		Q.Terrain.MOUNTAIN: Y += BASE_COEF
 		Q.Terrain.RELIC: Y += BASE_COEF
 		Q.Terrain.OCEAN: Y -= BASE_COEF
-		Q.Terrain.PORT: Y-= BASE_COEF
+		Q.Terrain.PORT: Y -= BASE_COEF
 	var Z = self.working_rounds
 	return max(int(Y*X*100-Z*20), -35)
 
